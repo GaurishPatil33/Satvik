@@ -11,12 +11,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [wished, setWished] = useState(false)
   const [added, setAdded] = useState(false)
   const [selectedVariant, setselectedVariant] = useState<Product["variants"][number]>(product.variants[0])
-  // const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100)
-  const originalPrice = Number(selectedVariant.price)
-  const finalPrice = originalPrice - (originalPrice - Number(selectedVariant.discount)) / 100
-  const couponPriceDiscount = Number(product.coupons[0].discount)
-  const finalCouponPrice = finalPrice - (finalPrice - Number(product.coupons[0].discount)) / 100
- 
+  const price = Number(selectedVariant?.price ?? 0);
+  const variantDiscount = Number(selectedVariant?.discount ?? 0);
+  const couponDiscount = Number(product.coupons?.[0]?.discount ?? 0);
+
+  const finalPrice =
+    price - (price * variantDiscount) / 100;
+
+  const finalCouponPrice =
+    finalPrice - (finalPrice * couponDiscount) / 100;
+
   const handleAdd = () => {
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
@@ -74,7 +78,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="flex items-center gap-1.5 mb-3">
           <div className="flex">
             {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} size={11} className={s <= Math.floor(Number(product.rating)) ? 'text-gold fill-gold' : 'text-bark/20'} fill={s <= Math.floor(Number(product.rating)) ? 'currentColor' : 'none'} />
+              <Star key={s} size={11} className={s <= Math.floor(Number(product.rating)) ? 'text-yellow-200 fill-yellow-400' : 'text-black/20'} fill={s <= Math.floor(Number(product.rating)) ? 'currentColor' : 'none'} />
             ))}
           </div>
           <span className="text-xs font-body font-medium text-bark">{product.rating}</span>
@@ -86,7 +90,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {product.variants.map((p, i) => (
             <div className="mb-3" key={i}>
-              <span className={`text-xs font-body border border-bark/20 text-bark/60 px-3 py-1 rounded-full ${selectedVariant.size === p.size ? "bg-green-100" : ""}`}>{p.size}</span>
+              <span className={`text-xs font-body border border-bark/20 text-bark/60 px-3 py-1 rounded-full ${selectedVariant.size === p.size ? "bg-green-100" : ""}`} onClick={() => setselectedVariant(p)}>{p.size}</span>
             </div>
           ))
           }
@@ -98,7 +102,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <span className="text-lg font-display font-bold text-bark" style={{ fontFamily: 'var(--font-playfair)' }}>
             ₹{finalPrice}
           </span>
-          <span className="text-xs font-body text-bark/40 line-through">₹{originalPrice}</span>
+          <span className="text-xs font-body text-bark/40 line-through">₹{price}</span>
           {Number(selectedVariant.discount) > 0 && (
             <span className="text-xs font-body font-semibold text-terra">{selectedVariant.discount}% off</span>
           )}
@@ -115,8 +119,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button
           onClick={handleAdd}
           className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-body font-semibold transition-all duration-300 ${added
-            ? 'bg-forest text-cream scale-95'
-            : 'bg-bark text-cream hover:bg-forest hover:scale-[1.02]'
+            ? 'bg-green-600 text-white scale-95'
+            : 'bg-green-700 text-white hover:bg-forest hover:scale-[1.02]'
             }`}
         >
           <ShoppingCart size={15} />

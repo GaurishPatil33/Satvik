@@ -11,7 +11,10 @@ const Navbar = () => {
     const [cartCount, setCartCount] = useState(0)
 
     return (
-        <>
+        <>  {/* Top strip */}
+            <div className="bg-green-600 text-cream-100 text-center text-xs py-1.5 font-dm tracking-wide">
+                🌿 Free delivery on orders above ₹499 &nbsp;|&nbsp; 100% Organic & Cold-Pressed
+            </div>
             {/* Main Navbar */}
             <nav className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

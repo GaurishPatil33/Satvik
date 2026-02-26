@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { X, ChevronDown, Gift, User } from 'lucide-react'
 import { FaWhatsapp } from 'react-icons/fa6'
+import Link from 'next/link'
 
 interface Props {
     isOpen: boolean
@@ -104,7 +105,7 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
                     <div className="px-4 mb-4">
                         <div className="grid grid-cols-3 gap-3">
                             {categories.map((category, index) => (
-                                <a
+                                <Link
                                     key={index}
                                     href={category.href}
                                     onClick={handleCategoryClick}
@@ -116,7 +117,7 @@ const MobileMenu = ({ isOpen, onClose }: Props) => {
                                     <span className="text-[10px] leading-tight text-green-800 font-semibold">
                                         {category.name}
                                     </span>
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>

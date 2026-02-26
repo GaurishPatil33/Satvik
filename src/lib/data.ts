@@ -27,7 +27,7 @@ export const products: Product[] = [{
         },
 
     ],
-    variants: [{ size: "250ml", price: 100, discont: 10 }, { size: "500ml", price: 200, discont: 15 }, { size: "1000ml", price: 300, discont: 15 }, { size: "250ml", price: 100, discont: 10 },],
+    variants: [{ size: "500ml", price: 200, discount: 15 }, { size: "1000ml", price: 300, discount: 15 },],
     badge: "Best Seller",
     KeyBenefits: ["Boosts Immunity", "MCT Rich"],
     coupons: [{ discount: 10, coupon: "ORGANIC10" }]

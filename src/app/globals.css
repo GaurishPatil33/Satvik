@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+   
+/* ===============================
+   SIDEBAR TRANSITIONS
+================================ */
+
+.sidebar-enter {
+  transform: translateX(-100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+}
+
+.sidebar-exit-active {
+  transform: translateX(-100%);
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ===============================
+   PREMIUM FADE + SLIDE UP
+================================ */
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.45s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* ===============================
+   FADE + SLIDE LEFT (Categories)
+================================ */
+
+@keyframes fadeLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-left {
+  animation: fadeLeft 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* ===============================
+   SCALE IN (Floating Button)
+================================ */
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* ===============================
+   ACCORDION SMOOTH EXPAND
+================================ */
+
+.accordion-content {
+  overflow: hidden;
+  transition: max-height 300ms ease, opacity 250ms ease;
+}
+
+.accordion-open {
+  max-height: 300px;
+  opacity: 1;
+}
+
+.accordion-closed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ===============================
+   ICON ROTATION
+================================ */
+
+.icon-rotate {
+  transition: transform 300ms ease;
+}
+
+.icon-rotate.open {
+  transform: rotate(45deg);
+}
+
+/* ===============================
+   REDUCE MOTION ACCESSIBILITY
+================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

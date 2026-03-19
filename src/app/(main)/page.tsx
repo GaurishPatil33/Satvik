@@ -15,6 +15,7 @@ import WhyChoose from '../../components/landing_page/WhyChoose'
 import WhyChooseSatvik from '../../components/landing_page/WhyChooseSatvik'
 import HeroBanner from '../../components/landing_page/HeroBanner'
 import CategoryRow from '../../components/landing_page/CategoryRow'
+import AuthPage from '@/src/components/login&register/AuthPage'
 
 export default function Home() {
   return (
@@ -35,6 +36,7 @@ export default function Home() {
       {/* <WhyChooseSatvik/> */}
       <ExploreOils />
       <ShopByConcern />
+      <AuthPage/>
     </main>
   )
 }

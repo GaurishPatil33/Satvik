@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import InputField from "./InputField";
 import SocialBtn from "./SocialBtn";
+import InputField from "./Inputfield";
 
 interface LoginFormProps {
   onSwitch: () => void;
@@ -62,7 +62,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
           {/* Social Login */}
           <div className="flex gap-2.5 mb-6">
             <SocialBtn icon="G" label="Google" />
-            <SocialBtn icon="📘" label="Facebook" />
+            <SocialBtn icon="f" label="Facebook" />
           </div>
 
           {/* Divider */}

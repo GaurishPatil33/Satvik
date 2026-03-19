@@ -6,7 +6,7 @@ import FilterSidebar from "@/src/components/listing/FilterSidebar";
 import ListingProductCard from "@/src/components/listing/ListingProductCard";
 import SortBar from "@/src/components/listing/SortBar";
 import { FilterState, MAX_PRICE, filterAndSort, ALL_PRODUCTS, ITEMS_PER_PAGE } from "@/src/lib/listing";
-
+import { products } from "@/src/lib/data";
 
 const DEFAULT_FILTERS: FilterState = {
   categories: [],

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import RegisterPage from "./RegisterForm";
+import Image from "next/image";
 
 type Mode = "login" | "register";
 
@@ -33,23 +34,13 @@ export default function AuthPage() {
 
           {/* Logo */}
           <div className="flex items-center justify-center gap-3 mb-12">
-            <div className="w-12 h-12 flex items-center justify-center text-2xl
-            bg-white/20 rounded-xl backdrop-blur">
-              🌿
-            </div>
+            <Image alt="logo"height={260} width={200} src={"/logo.png"}/>
 
-            <div className="text-left">
-              <div className="text-2xl font-black text-white font-playfair">
-                Satvik
-              </div>
-              <div className="text-[10px] tracking-widest uppercase text-green-300">
-                Pure & Natural
-              </div>
-            </div>
+            
           </div>
 
           {/* hero */}
-          <div className="text-7xl mb-6 animate-bounce">🫒</div>
+          {/* <div className="text-7xl mb-6 animate-bounce">🫒</div> */}
 
           <h2 className="text-3xl font-black text-white font-playfair leading-tight mb-4">
             Nature's finest,<br />at your doorstep
@@ -75,7 +66,7 @@ export default function AuthPage() {
           </div>
 
           {/* testimonial */}
-          <div className="mt-8 bg-white/10 border border-white/10 backdrop-blur
+          {/* <div className="mt-8 bg-white/10 border border-white/10 backdrop-blur
           rounded-xl p-5 text-left">
 
             <p className="text-green-100 text-sm italic mb-3">
@@ -100,7 +91,7 @@ export default function AuthPage() {
               </div>
             </div>
 
-          </div>
+          </div> */}
         </div>
       </div>
 

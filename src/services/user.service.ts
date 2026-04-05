@@ -1,5 +1,5 @@
+import { IUser } from "../types/user-types";
 import { apiFetch } from "./api";
-import { IUser } from "@/types/user-types";
 
 export const getUserProfile = async (): Promise<IUser> => {
   return apiFetch("/users/profile");

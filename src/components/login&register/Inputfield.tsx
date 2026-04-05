@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import React, { useState, ChangeEvent, ReactNode } from "react";
 
 interface InputFieldProps {
@@ -67,7 +68,7 @@ const InputField: React.FC<InputFieldProps> = ({
             onClick={() => setShowPwd((s) => !s)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-base cursor-pointer"
           >
-            {showPwd ? "🙈" : "👁️"}
+            {showPwd ?<EyeOff/> :<Eye/>}
           </button>
         )}
       </div>

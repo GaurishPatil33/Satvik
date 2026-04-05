@@ -14,6 +14,6 @@ export interface IProduct {
         public_id: string;
         type: "image" | "video" | "youtube";
     }[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }

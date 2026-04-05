@@ -8,7 +8,7 @@ export const products: Product[] = [
         brand: "Tata Simply Better ",
         category: "oil",
         description: "",
-        stock: 20,
+        stock: 5,
         rating: 4,
         reviews: [],
         media: [

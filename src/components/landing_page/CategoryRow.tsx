@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const categories = [
   { emoji: "🫒", name: "Cold-Pressed Oils", slug: "oils" },
   { emoji: "🍯", name: "Jaggery", slug: "jaggery" },
@@ -13,10 +15,10 @@ const categories = [
 
 export default function CategoryRow() {
   return (
-    <section className="py-8 pb-3 bg-cream border-b border-cream-dark/60 sticky top-[88px] z-40 backdrop-blur-sm">
-      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide justify-center flex-wrap ">
+    <section className="py-8 pb-3 bg-cream border-b border-cream-dark/60 md:sticky top-[90px] md:top-[100px] z-40 backdrop-blur-sm">
+      <div className="flex gap-4 overflow-x-auto pb-2  justify-center flex-wrap ">
         {categories.map((cat, i) => (
-          <a
+          <Link
             key={cat.slug}
             href={`/category/${cat.slug}`}
             className="flex flex-col items-center gap-2 flex-shrink-0 group"
@@ -28,7 +30,7 @@ export default function CategoryRow() {
             <span className="text-xs font-dm font-medium text-gray-600 group-hover:text-forest-600 transition-colors text-center leading-tight max-w-[70px]">
               {cat.name}
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </section>

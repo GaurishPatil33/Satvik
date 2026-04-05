@@ -3,6 +3,7 @@ import { Heart, ShoppingCart, Star, Zap } from 'lucide-react'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Product } from '@/src/lib/types'
+import { useRouter } from 'next/navigation'
 interface ProductCardProps {
   product: Product
 }
@@ -14,7 +15,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const price = Number(selectedVariant?.price ?? 0);
   const variantDiscount = Number(selectedVariant?.discount ?? 0);
   const couponDiscount = Number(product.coupons?.[0]?.discount ?? 0);
-
+const router=useRouter()
   const finalPrice =
     price - (price * variantDiscount) / 100;
 
@@ -48,7 +49,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </button>
 
       {/* Image */}
-      <div className="overflow-hidden bg-cream h-52 flex items-center justify-center">
+      <div className="overflow-hidden bg-cream h-52 flex items-center justify-center" onClick={()=>router.push(`/product/${product.id}`)}>
         <Image
           width={100}
           height={200}

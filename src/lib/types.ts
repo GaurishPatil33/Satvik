@@ -6,7 +6,7 @@ export interface categories {
 }
 
 export interface Product {
-    id: number;
+    id: number | string;
     title: string;
     brand: string;
     price?: number | string;
@@ -16,7 +16,7 @@ export interface Product {
     stock: number | string,
     rating: number | string,
     reviews: [],
-    media: { url: string, public_id: string, type: string }[];
+    media: { url: string, public_id: string, type: "image" | "video" | "youtube"; }[];
     variants: { size: string | number, price: string | number, discount: string | number }[],
     badge: string,
     KeyBenefits: string[],

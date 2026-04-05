@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import SocialBtn from "./SocialBtn";
 import InputField from "./Inputfield";
+import { useAuth } from "@/src/hooks/useAuth";
 
 interface LoginFormProps {
   onSwitch: () => void;
@@ -21,18 +22,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
     remember: false,
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [done, setDone] = useState<boolean>(false);
-
-  const handleSubmit = () => {
+  const { loading, login } = useAuth()
+  const handleSubmit = async() => {
     if (!form.email || !form.password) return;
 
-    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await login(form.email, form.password);
       setDone(true);
-    }, 1500);
+    } catch (err: any) {
+      alert(err.message || "Login failed");
+    }
   };
 
   return (
@@ -127,12 +129,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`w-full py-3 rounded-xl text-white font-bold text-[15px] font-dmSans tracking-[0.3px] shadow-lg transition-all
-            ${
-              loading
+            className={`w-full py-3 rounded-xl text-white  font-bold text-[15px] font-dmSans tracking-[0.3px] shadow-lg transition-all
+            ${loading
                 ? "bg-green-300"
-                : "bg-linear-to-br from-green-500 to-green-700 hover:scale-[1.02]"
-            }`}
+                : " bg-gradient-to-br from-green-500 to-green-700 hover:scale-[1.02]"
+              }`}
           >
             {loading ? "Signing in..." : "Sign In →"}
           </button>

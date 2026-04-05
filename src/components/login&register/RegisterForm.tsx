@@ -45,8 +45,6 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
     const handleSubmit = async () => {
         if (!step2Valid) return;
 
-
-
         try {
             await register({
                 firstName: form.firstName,

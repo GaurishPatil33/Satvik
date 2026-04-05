@@ -1,3 +1,4 @@
+"use client"
 import ExploreOils from '@/src/components/landing_page/ExploreOils'
 import ShopByConcern from '@/src/components/landing_page/ShopByConcern'
 import Reviews from '@/src/components/landing_page/Reviews'
@@ -18,16 +19,19 @@ import CategoryRow from '../../components/landing_page/CategoryRow'
 import AuthPage from '@/src/components/login&register/AuthPage'
 
 export default function Home() {
+
   return (
     <main className="min-h-screen bg-cream">
-      
+
       <HeroSection />
       {/* <CategoryNav /> */}
-      <CategoryRow/>
+      <CategoryRow />
       {/* <TrustBadges/> */}
       <TrustBanner />
+
+
       <MarqueeBanner />
-    
+
       <MostLoved />
       <VideoSection />
       <AllProducts />
@@ -36,7 +40,9 @@ export default function Home() {
       {/* <WhyChooseSatvik/> */}
       <ExploreOils />
       <ShopByConcern />
-      <AuthPage/>
+      <AuthPage />
+
+
     </main>
   )
 }

@@ -20,10 +20,16 @@ export const apiFetch = async (
     },
   });
 
-  if (!res.ok) {
-   const error = await res.json()
-    throw new Error(error.message || "API Error")
-  }
+
+if (!res.ok) {
+  const error = await res.json();
+
+  console.log("API ERROR:", error); // 👈 ADD THIS
+
+  throw new Error(
+    error?.errors?.[0]?.msg || error.message || "API Error"
+  );
+}
 
   return res.json();
 };

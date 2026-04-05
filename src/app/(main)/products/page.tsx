@@ -54,7 +54,7 @@ function Pagination({
             className={`w-9 h-9 rounded-xl border text-sm font-dm font-bold transition-all ${
               page === p
                 ? "bg-forest-500 border-forest-500 text-white shadow-md shadow-forest-500/20"
-                : "border-cream-300 bg-white text-gray-500 hover:border-forest-400"
+                : "border-cream-500 bg-white text-gray-500 hover:border-forest-400"
             }`}
           >
             {p}

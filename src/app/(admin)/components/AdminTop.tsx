@@ -81,7 +81,7 @@ export function AdminTopbar() {
                 {/* Notifications */}
                 <button className="relative w-9 h-9 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition-colors">
                     <Bell size={15} className="text-gray-500" />
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[9px] flex items-center justify-center font-bold">3</span>
+                    {/* <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[9px] flex items-center justify-center font-bold">3</span> */}
                 </button>
 
                 {/* Profile */}

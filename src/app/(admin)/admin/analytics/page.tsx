@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <SectionCard className="lg:col-span-2" title="Monthly Revenue & Orders" subtitle="6-month trend">
           <div className="px-6 py-5 space-y-4">
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
               {[
                 { label: "Total Revenue", value: "₹3,82,000", delta: "+18.4%" },
                 { label: "Total Orders", value: "524", delta: "+12.1%" },

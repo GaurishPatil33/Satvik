@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import {
     LayoutDashboard, Package, ShoppingCart, Users,
     BarChart2, Settings, ChevronRight, Tag, Star,
-    Bell, LogOut, Leaf
+    Bell, LogOut, Leaf,
+    ChevronLeft
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
@@ -66,7 +67,8 @@ export function AdminSidebar() {
             {/* Logo */}
             <div className="px-4 py-5 border-b border-white/10 flex items-center gap-3">
                 {collapsed ? (
-                    <Leaf size={20} />
+                    // <Leaf size={20} />
+                    <div className=""></div>
                 ) : (
                     <Image src="/logo.png" alt="logo" width={80} height={20} />
                 )}
@@ -78,7 +80,7 @@ export function AdminSidebar() {
                     onClick={() => setCollapsed(!collapsed)}
                     className="ml-auto text-white/50 hover:text-white"
                 >
-                    <ChevronRight
+                    <ChevronLeft
                         size={16}
                         className={cn("transition-transform", collapsed && "rotate-180")}
                     />

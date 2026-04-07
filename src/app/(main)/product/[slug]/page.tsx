@@ -4,15 +4,20 @@ import { useState, useEffect, useRef } from "react";
 import {
   Star, Shield, Truck, RotateCcw, CheckCircle,
   Heart, ShoppingCart, Zap, Share2, Copy, Check,
-  ChevronRight, Package
+  ChevronRight, Package,
+  Lock,
+  TruckIcon,
+  CheckSquareIcon
 } from "lucide-react";
 import { InfoTabs } from "@/src/components/product/info/InfoTabs";
 import { useParams } from "next/navigation";
 import { Product } from "@/src/lib/types";
-import Loading from "@/src/components/Loading";
 import { products } from "@/src/lib/data";
 import { ProductNotFound } from "@/src/components/NotFound";
 import MediaGallery from "@/src/components/product/media/MediaGallery";
+import Loading from "@/src/components/Loading";
+import { TbRotateClockwise } from "react-icons/tb";
+import { ProductCard } from "@/src/components/product/ProductCard";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 interface SizeOption {
@@ -85,12 +90,7 @@ const REVIEWS: Review[] = [
   { name: "Rekha Sharma", location: "Jaipur", avatar: "👩‍🍳", rating: 4, title: "Great oil, slight cloudiness at first", text: "Excellent for cooking — the flavour is authentic and my family loves it. Was initially concerned about cloudiness but it's natural sedimentation from unrefined pressing. Shakes clear easily.", product: "2L", date: "2 months ago", helpful: 19, verified: true },
 ];
 
-const RELATED = [
-  { emoji: "🌿", name: "Cold-Pressed Mustard Oil", sub: "Kachchi Ghani · 1000ml", price: 280, rating: 4.7, bg: "bg-yellow-50" },
-  { emoji: "🥥", name: "Virgin Coconut Oil", sub: "Cold-Pressed · 500ml", price: 220, rating: 4.8, bg: "bg-amber-50" },
-  { emoji: "🧈", name: "A2 Cow Ghee", sub: "Bilona Method · 500g", price: 680, rating: 4.9, bg: "bg-orange-50" },
-  { emoji: "🍫", name: "Palm Jaggery", sub: "Organic · 500g", price: 180, rating: 4.8, bg: "bg-yellow-50" },
-];
+
 
 const RATING_BREAKDOWN = [
   { star: 5, pct: 89 }, { star: 4, pct: 7 },
@@ -126,10 +126,9 @@ export default function ProductPage() {
   // const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const id = params.slug?.toString();
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedlproducts, setrelatedProducts] = useState<Product[] | null>(null);
   const [loading, setloading] = useState(false)
 
-  const [selectedSize, setSelectedSize] = useState<SizeOption>(SIZES[1]);
-  const [activeThumb, setActiveThumb] = useState(0);
   const [qty, setQty] = useState(1);
   const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
@@ -138,6 +137,8 @@ export default function ProductPage() {
   const [stickyVisible, setStickyVisible] = useState(false);
   const addBtnRef = useRef<HTMLButtonElement>(null);
 
+
+  const [selectedVariant, setSelectedVariant] = useState<Product["variants"][0] | null>(null);
 
 
   // Sticky bar visibility
@@ -161,12 +162,17 @@ export default function ProductPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const discountedPrice = Math.round(selectedSize.price * 0.9);
-  const originalPrice = Math.round(selectedSize.price * 1.18);
-  const savings = originalPrice - selectedSize.price;
-  const savingsPct = Math.round((savings / originalPrice) * 100);
 
+  // Ensure price is a number, default to 0 if null
+  const price = selectedVariant ? Number(selectedVariant.price) : 0;
 
+  // Now safe to do arithmetic
+  const discountedPrice = Math.round(price * 0.9);
+  const originalPrice = Math.round(price * 1.18);
+  const savings = originalPrice - discountedPrice;
+  const savingsPct = originalPrice > 0 ? Math.round((savings / originalPrice) * 100) : 0;
+
+// fetching product
   useEffect(() => {
     if (!id) return
 
@@ -175,10 +181,17 @@ export default function ProductPage() {
     console.log("product", fetch)
     if (fetch) {
       setProduct(fetch)
+      setrelatedProducts(products)
     }
     setloading(false)
   }, [id])
 
+
+  useEffect(() => {
+    if (product?.variants.length) {
+      setSelectedVariant(product.variants[0])
+    }
+  }, [product])
 
   if (loading) return <Loading />;
 
@@ -275,29 +288,15 @@ export default function ProductPage() {
           <div className="mb-5">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-[11px] font-dm font-bold text-gray-500 uppercase tracking-widest">Size</span>
-              <span className="text-xs font-dm text-earth-400">{selectedSize.label} selected</span>
+              <span className="text-xs font-dm text-earth-400">{selectedVariant?.size} selected</span>
             </div>
-            <div className="flex gap-2 overflow-x-scroll">
-              {SIZES.map((s) => (
-                <button
-                  key={s.label}
-                  onClick={() => setSelectedSize(s)}
-                  className={`min-w-[72px] px-4 py-2 rounded-xl border-2 text-sm font-dm font-semibold transition-all duration-200 text-center ${selectedSize.label === s.label
-                    ? "border-forest-500 bg-forest-50 text-forest-600 shadow-md shadow-forest-500/10"
-                    : "border-cream-300 bg-white text-gray-500 hover:border-forest-400 hover:text-forest-500"
-                    }`}
-                >
-                  {s.label}
-                  <span className="block text-[10px] font-medium opacity-70 mt-0.5">₹{s.price}</span>
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2 overflow-x-scroll scroll-m-0">
+            {/*  */}
+            <div className="flex gap-2 overflow-x-auto">
               {product.variants.map((s) => (
                 <button
                   key={s.size}
-                  onClick={() => setSelectedSize(s.size)}
-                  className={`min-w-[72px] px-4 py-2 rounded-xl border-2 text-sm font-dm font-semibold transition-all duration-200 text-center ${selectedSize.label === s.label
+                  onClick={() => setSelectedVariant(s)}
+                  className={`min-w-[72px] px-4 py-2 rouneded-xl border-2 text-sm font-dm font-semibold transition-all duration-200 text-center ${selectedVariant?.size === s.size
                     ? "border-forest-500 bg-forest-50 text-forest-600 shadow-md shadow-forest-500/10"
                     : "border-cream-300 bg-white text-gray-500 hover:border-forest-400 hover:text-forest-500"
                     }`}
@@ -311,7 +310,7 @@ export default function ProductPage() {
 
           {/* Price */}
           <div className="flex items-baseline gap-3 flex-wrap mb-1.5">
-            <span className="font-playfair text-[36px] font-bold text-forest-600">₹{selectedSize.price}</span>
+            <span className="font-playfair text-[36px] font-bold text-forest-600">₹{selectedVariant?.price}</span>
             <span className="text-lg text-gray-300 line-through">₹{originalPrice}</span>
             <span className="text-xs font-dm font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">
               Save {savingsPct}%
@@ -321,10 +320,10 @@ export default function ProductPage() {
           {/* Coupon */}
           <div className="flex items-center gap-2 flex-wrap bg-gradient-to-r from-amber-50 to-yellow-50 border-[1.5px] border-dashed border-amber-300 rounded-xl px-4 py-2.5 mb-5">
             <span className="bg-amber-400 text-forest-800 text-xs font-bold px-2.5 py-0.5 rounded-md tracking-wide flex-shrink-0">
-              SATVIK10
+
             </span>
             <span className="text-xs font-dm text-gray-600 flex-1">
-              Apply for 10% extra off — pay just <strong className="text-gray-800">₹{discountedPrice}</strong>
+              Apply for    {product.coupons[0].discount} extra off — pay just <strong className="text-gray-800">₹{discountedPrice}</strong>
             </span>
             <button
               onClick={handleCopyCoupon}
@@ -370,13 +369,13 @@ export default function ProductPage() {
           {/* Trust badges */}
           <div className="grid grid-cols-4 gap-2 mb-4">
             {[
-              { icon: "🔒", text: "Secure Payment" },
-              { icon: "↩️", text: "7-Day Returns" },
-              { icon: "🚚", text: "Free Delivery ₹499+" },
-              { icon: "✅", text: "FSSAI Certified" },
+              { icon: <Lock/>, text: "Secure Payment" },
+              { icon: <RotateCcw/>, text: "7-Day Returns" },
+              { icon: <TruckIcon/>, text: "Free Delivery ₹499+" },
+              { icon: <CheckSquareIcon/>, text: "FSSAI Certified" },
             ].map((b) => (
-              <div key={b.text} className="bg-cream-100 border border-cream-200 rounded-xl p-2.5 text-center">
-                <span className="text-lg block mb-1">{b.icon}</span>
+              <div key={b.text} className="bg-cream-100 border border-cream-300 rounded-xl p-2.5 text-center">
+                <span className="text-lg  mb-1 flex items-center justify-center text-forest-800">{b.icon}</span>
                 <span className="text-[10px] font-dm font-bold text-gray-500 leading-tight">{b.text}</span>
               </div>
             ))}
@@ -418,17 +417,7 @@ export default function ProductPage() {
         </div>
       </div >
 
-      {/* Recently Viewed */}
-      < div className="bg-cream-100 border-y border-cream-200 px-5 py-3 flex items-center gap-3 overflow-x-auto mt-4" >
-        <span className="text-[11px] font-dm font-bold text-earth-400 uppercase tracking-widest flex-shrink-0">Recently Viewed</span>
-        {
-          ["🌿 Mustard Oil", "🥥 Coconut Oil", "🧈 A2 Cow Ghee", "🍫 Palm Jaggery", "🧂 Rock Salt"].map((item) => (
-            <a key={item} href="#" className="flex items-center gap-1.5 bg-white border border-cream-200 rounded-full px-3 py-1.5 text-xs font-dm font-semibold text-gray-600 hover:border-forest-400 hover:text-forest-500 transition-colors whitespace-nowrap flex-shrink-0">
-              {item}
-            </a>
-          ))
-        }
-      </div >
+      
 
       {/* ── TABS ── */}
       < div className="max-w-7xl mx-auto px-5 mt-8" >
@@ -617,7 +606,7 @@ export default function ProductPage() {
         </div>
       </div >
 
-      <InfoTabs />
+      {/* <InfoTabs /> */}
 
       {/* Related Products */}
       <div className="max-w-7xl mx-auto px-5 pb-16">
@@ -629,27 +618,8 @@ export default function ProductPage() {
           <a href="/products" className="text-sm font-dm font-bold text-forest-500 hover:text-forest-600 transition-colors">View all →</a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {RELATED.map((p) => (
-            <div key={p.name} className="bg-white border border-cream-200 rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-              <div className={`${p.bg} h-36 flex items-center justify-center text-5xl`}>{p.emoji}</div>
-              <div className="p-3">
-                <p className="font-playfair font-semibold text-sm text-gray-900 leading-tight mb-0.5">{p.name}</p>
-                <p className="text-[11px] text-earth-400 font-dm mb-1.5">{p.sub}</p>
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                  <span className="text-[11px] text-gray-500 font-dm">{p.rating}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-playfair font-bold text-base text-forest-600">₹{p.price}</span>
-                  <button
-                    onClick={handleAddToCart}
-                    className="bg-forest-500 hover:bg-forest-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
-                  >
-                    <ShoppingCart className="w-3 h-3" /> Add
-                  </button>
-                </div>
-              </div>
-            </div>
+          {relatedlproducts?.slice(0,4).map((p) => (
+            <ProductCard key={p.id} product={p}/>
           ))}
         </div>
       </div>
@@ -662,14 +632,14 @@ export default function ProductPage() {
       >
         <span className="text-3xl flex-shrink-0">🫒</span>
         <div>
-          <p className="font-playfair font-semibold text-sm text-gray-900">Wood Pressed Groundnut Oil · {selectedSize.label}</p>
+          <p className="font-playfair font-semibold text-sm text-gray-900">Wood Pressed Groundnut Oil · {selectedVariant?.size}</p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <StarRow rating={4.9} size={11} />
             <span className="text-[11px] text-gray-400">4.9 · 1,240 reviews</span>
           </div>
         </div>
         <span className="font-playfair font-bold text-xl text-forest-600 ml-auto flex-shrink-0">
-          ₹{selectedSize.price}
+          ₹{selectedVariant?.price}
         </span>
         <button
           onClick={handleAddToCart}

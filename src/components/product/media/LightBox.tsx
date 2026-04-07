@@ -11,7 +11,7 @@ export function Lightbox({
   const prev = () => setActive((p: number) => (p - 1 + media.length) % media.length);
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/90 z-60 flex items-center justify-center" onClick={onClose}>
 
       {/* Close */}
       <button onClick={onClose} className="absolute top-4 right-4 text-white">

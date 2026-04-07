@@ -175,7 +175,7 @@ export default function CustomersPage() {
       </div>
 
       {/* Quick stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: "Total Customers", value: customers.length, icon: "👥" },
           { label: "Active", value: customers.filter((c) => c.status === "active").length, icon: "✅" },

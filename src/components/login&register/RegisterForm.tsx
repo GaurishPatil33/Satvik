@@ -63,7 +63,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
     return (
         <div className="animate-[fadeIn_0.4s_ease]">
             <h2 className="text-[28px] font-black text-green-900 font-playfair mb-1">
-                Join Satvik 🌿
+                Join Satvik 
             </h2>
 
             <p className="text-gray-500 text-sm mb-6 font-dmSans">

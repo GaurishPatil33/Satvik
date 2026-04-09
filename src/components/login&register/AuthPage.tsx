@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm";
 import RegisterPage from "./RegisterForm";
 import Image from "next/image";
 import { useAuthModalStore } from "@/src/store/authModal.store";
+import { FlaskConical, Gift, Truck } from "lucide-react";
 
 type Mode = "login" | "register";
 
@@ -12,14 +13,14 @@ export default function AuthPage() {
   const { isOpen, mode, close, openLogin, openRegister } = useAuthModalStore();
 
   const features = [
-    { icon: "🌱", text: "100% Organic & Lab Certified" },
-    { icon: "🚚", text: "Free delivery on orders ₹499+" },
-    { icon: "🎁", text: "10% off on your first order" },
+    { icon: <FlaskConical />, text: "100% Organic & Lab Certified" },
+    { icon: <Truck/>, text: "Free delivery on orders ₹499+" },
+    { icon: <Gift/>, text: "10% off on your first order" },
     { icon: "🔄", text: "7-day hassle-free returns" },
   ];
 
   if (!isOpen) return null
-  
+
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center">
 

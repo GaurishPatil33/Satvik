@@ -21,7 +21,7 @@ export default function MostLoved() {
             </h2>
           </div>
           <Link
-            href="#"
+            href='/products'
             className="hidden sm:flex items-center gap-1.5 text-sm font-body font-medium text-forest hover:text-bark transition-colors border-b border-forest/40 hover:border-bark pb-0.5"
           >
             Shop more →

@@ -7,6 +7,8 @@ import ListingProductCard from "@/src/components/listing/ListingProductCard";
 import SortBar from "@/src/components/listing/SortBar";
 import { FilterState, MAX_PRICE, filterAndSort, ITEMS_PER_PAGE } from "@/src/lib/listing";
 import { products } from "@/src/lib/data";
+import { Pagination } from "@/src/components/listing/Pagination";
+import { MobileFilterDrawer } from "@/src/components/listing/MobilefilterDrawer";
 
 const DEFAULT_FILTERS: FilterState = {
   categories: [],
@@ -20,104 +22,8 @@ const DEFAULT_FILTERS: FilterState = {
   search: "",
 };
 
-function Pagination({
-  page, total, perPage, onChange,
-}: { page: number; total: number; perPage: number; onChange: (p: number) => void }) {
-  const totalPages = Math.ceil(total / perPage);
-  if (totalPages <= 1) return null;
 
-  const pages: (number | "...")[] = [];
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) {
-      pages.push(i);
-    } else if (Math.abs(i - page) === 2) {
-      if (pages[pages.length - 1] !== "...") pages.push("...");
-    }
-  }
 
-  return (
-    <div className="flex items-center justify-center gap-1.5 mt-10 flex-wrap">
-      <button
-        disabled={page === 1}
-        onClick={() => onChange(page - 1)}
-        className="flex items-center gap-1 px-3.5 h-9 rounded-xl border border-cream-300 bg-white text-sm font-dm font-semibold text-gray-500 hover:border-forest-400 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-      >
-        ← Prev
-      </button>
-      {pages.map((p, i) =>
-        p === "..." ? (
-          <span key={i} className="w-9 h-9 flex items-center justify-center text-gray-400 text-sm">…</span>
-        ) : (
-          <button
-            key={p}
-            onClick={() => onChange(p as number)}
-            className={`w-9 h-9 rounded-xl border text-sm font-dm font-bold transition-all ${
-              page === p
-                ? "bg-forest-500 border-forest-500 text-white shadow-md shadow-forest-500/20"
-                : "border-cream-500 bg-white text-gray-500 hover:border-forest-400"
-            }`}
-          >
-            {p}
-          </button>
-        )
-      )}
-      <button
-        disabled={page === totalPages}
-        onClick={() => onChange(page + 1)}
-        className="flex items-center gap-1 px-3.5 h-9 rounded-xl border border-cream-300 bg-white text-sm font-dm font-semibold text-gray-500 hover:border-forest-400 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-      >
-        Next →
-      </button>
-    </div>
-  );
-}
-
-function MobileFilterDrawer({
-  open, onClose, filters, onChange, onClear,
-}: {
-  open: boolean; onClose: () => void;
-  filters: FilterState; onChange: (f: Partial<FilterState>) => void; onClear: () => void;
-}) {
-  return (
-    <>
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/40 z-[200] lg:hidden transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-        onClick={onClose}
-      />
-      {/* Drawer */}
-      <div
-        className={`fixed left-0 top-0 bottom-0 w-[min(320px,90vw)] bg-white z-[201] shadow-2xl flex flex-col transition-transform duration-300 ease-out lg:hidden ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-cream-200 flex-shrink-0">
-          <span className="font-playfair font-bold text-base">Filters</span>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-cream-100 transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          <FilterSidebar filters={filters} onChange={onChange} onClear={onClear} />
-        </div>
-        <div className="flex gap-2.5 p-4 border-t border-cream-200 flex-shrink-0">
-          <button
-            onClick={onClear}
-            className="flex-shrink-0 px-4 py-2.5 border border-cream-300 rounded-xl text-sm font-dm font-bold text-gray-500"
-          >
-            Reset
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 bg-forest-500 hover:bg-forest-600 text-white rounded-xl py-2.5 text-sm font-dm font-bold transition-colors"
-          >
-            Show Results
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
 
 export default function ListingPage() {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);

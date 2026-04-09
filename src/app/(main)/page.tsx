@@ -26,7 +26,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-cream">
       <HeroSection />
-<Sidebar/>
       {/* <CategoryNav /> */}
       <CategoryRow />
       {/* <TrustBadges/> */}

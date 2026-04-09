@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import AuthPage from '../components/login&register/AuthPage'
 
 export const metadata: Metadata = {
   title: 'Satvik — Pure & Natural',
@@ -20,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="grain-overlay" aria-hidden="true" />
         {children}
+
+        <AuthPage />
       </body>
     </html>
   )

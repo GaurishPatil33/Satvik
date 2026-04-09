@@ -33,8 +33,8 @@ export default function FilterSidebar({ filters, onChange, onClear }: Props) {
     filters.categories.length > 0 ||
     filters.priceMin > 0 ||
     filters.priceMax < MAX_PRICE ||
-    filters.minRating > 0 ||
-    filters.concerns.length > 0;
+    filters.minRating > 0 ;
+    // filters.concerns.length > 0;
 
   const toggleCategory = (cat: CategoryType) => {
     const next = filters.categories.includes(cat)
@@ -43,12 +43,12 @@ export default function FilterSidebar({ filters, onChange, onClear }: Props) {
     onChange({ categories: next });
   };
 
-  const toggleConcern = (concern: ConcernType) => {
-    const next = filters.concerns.includes(concern)
-      ? filters.concerns.filter(c => c !== concern)
-      : [...filters.concerns, concern];
-    onChange({ concerns: next });
-  };
+  // const toggleConcern = (concern: ConcernType) => {
+  //   const next = filters.concerns.includes(concern)
+  //     ? filters.concerns.filter(c => c !== concern)
+  //     : [...filters.concerns, concern];
+  //   onChange({ concerns: next });
+  // };
 
   const pctMin = (filters.priceMin / MAX_PRICE) * 100;
   const pctMax = (filters.priceMax / MAX_PRICE) * 100;
@@ -179,7 +179,7 @@ export default function FilterSidebar({ filters, onChange, onClear }: Props) {
       </Section>
 
       {/* Health Concern */}
-      <Section title="Health Concern">
+      {/* <Section title="Health Concern">
         <div className="flex flex-wrap gap-2">
           {CONCERN_OPTIONS.map(c => (
             <button
@@ -196,7 +196,7 @@ export default function FilterSidebar({ filters, onChange, onClear }: Props) {
             </button>
           ))}
         </div>
-      </Section>
+      </Section> */}
 
       {/* Certifications */}
       <Section title="Certifications" defaultOpen={false}>

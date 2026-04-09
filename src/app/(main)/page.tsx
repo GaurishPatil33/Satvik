@@ -17,13 +17,16 @@ import WhyChooseSatvik from '../../components/landing_page/WhyChooseSatvik'
 import HeroBanner from '../../components/landing_page/HeroBanner'
 import CategoryRow from '../../components/landing_page/CategoryRow'
 import AuthPage from '@/src/components/login&register/AuthPage'
+import { useAuthStore } from '@/src/store/auth.store'
+import Sidebar from '@/src/components/MobileMenu'
 
 export default function Home() {
+  const { logout } = useAuthStore()
 
   return (
     <main className="min-h-screen bg-cream">
-
       <HeroSection />
+<Sidebar/>
       {/* <CategoryNav /> */}
       <CategoryRow />
       {/* <TrustBadges/> */}
@@ -41,7 +44,9 @@ export default function Home() {
       <ExploreOils />
       <ShopByConcern />
       <AuthPage />
-
+      <button onClick={logout} className='bg-forest-400 text-gold-600 h-10 w-fit rounded-full flex items-center justify-center p-4  '>
+        logout
+      </button>
 
     </main>
   )

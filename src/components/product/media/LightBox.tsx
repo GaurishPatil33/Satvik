@@ -11,25 +11,32 @@ export function Lightbox({
   const prev = () => setActive((p: number) => (p - 1 + media.length) % media.length);
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-60 flex items-center justify-center" onClick={onClose}>
 
-      {/* Close */}
-      <button onClick={onClose} className="absolute top-4 right-4 text-white">
-        <X size={28} />
-      </button>
+    <div className="fixed inset-0 flex items-center justify-center">
 
-      {/* Arrows */}
-      <button onClick={prev} className="absolute left-5 text-white">
-        <ChevronLeft size={40} />
-      </button>
 
-      <div className="w-[80%] h-[80%]">
-        <MediaRenderer item={media[active]} />
+      <div className="fixed inset-0 bg-black/90 z-60 flex items-center justify-center" onClick={onClose} />
+
+
+      <div className="flex items-center justify-center z-70 inset-0">
+
+
+
+        {/* Arrows */}
+        <button onClick={prev} className="absolute left-5 text-gray-600 p-0.5 bg-white/50 rounded-full">
+          <ChevronLeft size={40} />
+        </button>
+
+        <div className="w-[80%] h-[80%]">
+
+          <MediaRenderer item={media[active]} />
+        </div>
+
+        <button onClick={next} className="absolute right-5 text-gray-600 p-0.5 bg-white/50 rounded-full">
+          <ChevronRight size={40} />
+        </button>
+
       </div>
-
-      <button onClick={next} className="absolute right-5 text-white">
-        <ChevronRight size={40} />
-      </button>
     </div>
   );
 }

@@ -60,7 +60,7 @@ export function AdminSidebar() {
     return (
         <aside
             className={cn(
-                "bg-[#1A2E1B] text-white flex flex-col h-full shrink-0 transition-all duration-300",
+                "bg-[#1A2E1B] text-white flex flex-col h-full shrink-0 transition-all duration-300 z-60",
                 collapsed ? "w-20 " : "w-64"
             )}
         >
@@ -137,12 +137,21 @@ export function AdminSidebar() {
 
                                         {/* Tooltip */}
                                         {collapsed && (
-                                            <span className="absolute left-14 top-1/2 -translate-y-1/2 
-                                             bg-black text-white text-xs px-2 py-1 rounded 
-                                              opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 
-                                                  transition-all duration-200 whitespace-nowrap z-[999] pointer-events-none">
-                                                {item.label}
-                                            </span>
+                                            <div className="absolute left-16 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+                                                <div className="
+                                                  relative bg-gray-900 text-white text-xs px-3 py-1.5 rounded-md
+                                                 shadow-lg border border-white/10
+                                                  opacity-0 translate-x-2 scale-95
+                                                      group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100
+                                              transition-all duration-200 whitespace-nowrap
+                                                     ">
+                                                    {item.label}
+
+                                                    {/* Arrow */}
+                                                    <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 
+                                                         w-2 h-2 bg-gray-900 rotate-45 border-l border-t border-white/10"></div>
+                                                </div>
+                                            </div>
                                         )}
                                     </li>
                                 );
@@ -161,13 +170,13 @@ export function AdminSidebar() {
                     )}
                 >
                     <div className="w-8 h-8 rounded-full bg-[#C8961C] flex items-center justify-center text-xs font-bold">
-                        {user?.firstName?.[0]}
+                        {user?.first_name?.[0]}
                     </div>
 
                     {!collapsed && (
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold truncate">
-                                {user?.firstName}
+                                {user?.first_name}
                             </p>
                             <p className="text-[10px] text-white/40 truncate">
                                 {user?.email}

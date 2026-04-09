@@ -7,39 +7,32 @@ export interface LoginData {
 }
 
 export interface RegisterData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   password: string;
 }
 
-export const loginUser = async (data: LoginData) => {
-  const res = await apiFetch("/auth/login", {
+/* LOGIN → returns user + token */
+export const loginUser = async (data: LoginData): Promise<{
+  user: IUser;
+  token: string;
+}> => {
+  return apiFetch("/auth/login", {
     method: "POST",
     body: JSON.stringify(data),
   });
-
-  localStorage.setItem("token", res.token);
-
-  return res.user as IUser;
 };
 
-export const registerUser = async (data: RegisterData) => {
-  const res = await apiFetch("/auth/register", {
+/* REGISTER → returns ONLY USER */
+export const registerUser = async (data: RegisterData): Promise<IUser> => {
+  return apiFetch("/auth/register", {
     method: "POST",
     body: JSON.stringify(data),
   });
-
-  localStorage.setItem("token", res.token);
-
-  return res.user as IUser;
 };
 
-export const logoutUser = () => {
-  localStorage.removeItem("token");
+export const getCurrentUser = async (): Promise<IUser> => {
+  return apiFetch("/auth/me");
 };
-
-export const getCurrentUser = async () => {
-  return apiFetch("/auth/me")
-}

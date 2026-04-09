@@ -36,7 +36,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <div className="relative">
         {icon && (
           <span
-            className={`absolute left-3.5 top-1/2 -translate-y-1/2 text-base transition-colors ${
+            className={`absolute  left-3.5 top-1/2 -translate-y-1/2 text-base transition-colors ${
               focused ? "text-green-600" : "text-gray-400"
             }`}
           >

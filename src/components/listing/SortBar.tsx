@@ -1,7 +1,7 @@
 "use client";
 
 import { FilterState, SortType, MAX_PRICE, ViewType } from "@/src/lib/listing";
-import { X, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
+import { X, LayoutGrid, List, SlidersHorizontal, Square } from "lucide-react";
 
 interface Props {
   filters: FilterState;
@@ -12,12 +12,12 @@ interface Props {
 }
 
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
-  { value: "popular",    label: "Most Popular" },
-  { value: "rating",     label: "Highest Rated" },
-  { value: "price_asc",  label: "Price: Low to High" },
+  { value: "popular", label: "Most Popular" },
+  { value: "rating", label: "Highest Rated" },
+  { value: "price_asc", label: "Price: Low to High" },
   { value: "price_desc", label: "Price: High to Low" },
-  { value: "newest",     label: "Newest First" },
-  { value: "discount",   label: "Biggest Discount" },
+  { value: "newest", label: "Newest First" },
+  { value: "discount", label: "Biggest Discount" },
 ];
 
 export default function SortBar({ filters, total, onChange, onClear, onOpenMobileFilter }: Props) {
@@ -31,16 +31,16 @@ export default function SortBar({ filters, total, onChange, onClear, onOpenMobil
     chips.push({ label: `₹${filters.priceMin}–₹${filters.priceMax}`, onRemove: () => onChange({ priceMin: 0, priceMax: MAX_PRICE }) });
   if (filters.minRating > 0)
     chips.push({ label: `${filters.minRating}★+`, onRemove: () => onChange({ minRating: 0 }) });
-  filters.concerns.forEach(c =>
-    chips.push({ label: c, onRemove: () => onChange({ concerns: filters.concerns.filter(x => x !== c) }) })
-  );
+  // filters.concerns.forEach(c =>
+  //   chips.push({ label: c, onRemove: () => onChange({ concerns: filters.concerns.filter(x => x !== c) }) })
+  // );
   if (filters.search)
     chips.push({ label: `"${filters.search}"`, onRemove: () => onChange({ search: "" }) });
 
   const viewBtns: { value: ViewType; icon: React.ReactNode; title: string }[] = [
-    { value: 3,      icon: <span className="text-xs font-bold">3</span>, title: "3 columns" },
-    { value: 4,      icon: <LayoutGrid className="w-3.5 h-3.5" />,       title: "4 columns" },
-    { value: "list", icon: <List className="w-3.5 h-3.5" />,             title: "List view" },
+    {value: 3, icon: <Square className="w-3.5 h-3.5" />, title: "3 columns" },
+    { value: 4, icon: <LayoutGrid className="w-3.5 h-3.5" />, title: "4 columns" },
+    { value: "list", icon: <List className="w-3.5 h-3.5" />, title: "List view" },
   ];
 
   return (
@@ -86,22 +86,21 @@ export default function SortBar({ filters, total, onChange, onClear, onOpenMobil
           </select>
 
           {/* View toggle */}
-          <div className="flex border border-cream-300 rounded-xl overflow-hidden">
+          {/* <div className="flex border border-cream-300 rounded-xl overflow-hidden">
             {viewBtns.map(btn => (
               <button
                 key={String(btn.value)}
                 onClick={() => onChange({ view: btn.value })}
                 title={btn.title}
-                className={`w-9 h-9 flex items-center justify-center transition-colors ${
-                  filters.view === btn.value
-                    ? "bg-forest-500 text-white"
-                    : "bg-white text-gray-400 hover:bg-cream-100"
-                }`}
+                className={`w-9 h-9 flex items-center justify-center transition-colors ${filters.view === btn.value
+                  ? "bg-forest-500 text-white"
+                  : "bg-white text-gray-400 hover:bg-cream-100"
+                  }`}
               >
                 {btn.icon}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
 

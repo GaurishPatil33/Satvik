@@ -10,12 +10,14 @@ const videos = [
     src: null
   },
   {
-    thumb: "a",
+    thumb: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&q=80',
+
     title: 'From Farm to Bottle',
     duration: '5:12', src: null
   },
   {
-    thumb: "null",
+    thumb: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&q=80',
+
     title: 'From Farm to Bottle',
     duration: '5:12', src: null
   },

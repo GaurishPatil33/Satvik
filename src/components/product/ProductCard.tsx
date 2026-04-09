@@ -98,7 +98,7 @@ const router=useRouter()
 
         {/* Price */}
         <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-lg font-display font-bold text-bark" style={{ fontFamily: 'var(--font-playfair)' }}>
+          <span className="text-lg  font-bold text-bark"  >
             ₹{finalPrice}
           </span>
           <span className="text-xs font-body text-bark/40 line-through">₹{price}</span>

@@ -5,7 +5,7 @@ import { Search, X, ChevronRight } from "lucide-react";
 import FilterSidebar from "@/src/components/listing/FilterSidebar";
 import ListingProductCard from "@/src/components/listing/ListingProductCard";
 import SortBar from "@/src/components/listing/SortBar";
-import { FilterState, MAX_PRICE, filterAndSort, ALL_PRODUCTS, ITEMS_PER_PAGE } from "@/src/lib/listing";
+import { FilterState, MAX_PRICE, filterAndSort, ITEMS_PER_PAGE } from "@/src/lib/listing";
 import { products } from "@/src/lib/data";
 
 const DEFAULT_FILTERS: FilterState = {
@@ -13,7 +13,7 @@ const DEFAULT_FILTERS: FilterState = {
   priceMin: 0,
   priceMax: MAX_PRICE,
   minRating: 0,
-  concerns: [],
+  // concerns: [],
   sort: "popular",
   view: 4,
   page: 1,
@@ -144,7 +144,7 @@ export default function ListingPage() {
     }, 280);
   };
 
-  const filtered = useMemo(() => filterAndSort(ALL_PRODUCTS, filters), [filters]);
+  const filtered = useMemo(() => filterAndSort(products, filters), [filters]);
   const total = filtered.length;
   const paginated = useMemo(() => {
     const start = (filters.page - 1) * ITEMS_PER_PAGE;
@@ -161,11 +161,11 @@ export default function ListingPage() {
   const scrollToTop = () => mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div className="top-20">
+    <div className="pt-12">
    
 
       {/* Page Hero */}
-      <div className="relative bg-gradient-to-br from-forest-700 to-forest-500 overflow-hidden py-8 px-5 top-20 my-5">
+      <div className="hidden md:block md:relative bg-gradient-to-br from-forest-700 to-forest-500 overflow-hidden py-8 px-5 top-20 mb-10">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px" }} />
         <div className="absolute top-0 right-0 w-72 h-72 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto relative z-10">
@@ -203,7 +203,7 @@ export default function ListingPage() {
       </div> */}
 
       {/* Main layout */}
-      <div className="max-w-7xl mx-auto px-5 py-6 flex gap-6 items-start">
+      <div className="max-w-7xl mx-auto px-5 py-6 flex gap-6 items-start mt-16" >
 
         {/* Sidebar — desktop */}
         <div className="w-64 flex-shrink-0 hidden lg:block sticky top-24">

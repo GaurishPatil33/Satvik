@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import SocialBtn from "./SocialBtn";
 import InputField from "./Inputfield";
 import { useAuth } from "@/src/hooks/useAuth";
+import { CiLock, CiMail } from "react-icons/ci";
+import { CheckCircle, Facebook } from "lucide-react";
+import { FaFacebook } from "react-icons/fa";
+import { GrGoogle } from "react-icons/gr";
+import { useAuthModalStore } from "@/src/store/authModal.store";
 
 interface LoginFormProps {
   onSwitch: () => void;
@@ -22,25 +27,62 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
     remember: false,
   });
 
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<Partial<LoginFormState>>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof LoginFormState, boolean>>>({});
+  const [apiError, setApiError] = useState<string | null>(null);
   const [done, setDone] = useState<boolean>(false);
   const { loading, login } = useAuth()
-  const handleSubmit = async() => {
-    if (!form.email || !form.password) return;
+  const { close } = useAuthModalStore();
 
 
-    try {
-      await login(form.email, form.password);
-      setDone(true);
-    } catch (err: any) {
-      alert(err.message || "Login failed");
-    }
+  const validateEmail = (email: string) => {
+    if (!email) return "Email is required";
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email)) return "Enter a valid email";
+    return "";
   };
 
+  const validatePassword = (password: string) => {
+    if (!password) return "Password is required";
+    if (password.length < 6) return "Minimum 6 characters required";
+    return "";
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      email: validateEmail(form.email),
+      password: validatePassword(form.password),
+    };
+
+    setErrors(newErrors);
+    return !newErrors.email && !newErrors.password;
+  };
+
+const handleSubmit = async () => {
+  setApiError(null);
+
+  const isValid = validateForm();
+  if (!isValid) return;
+
+  try {
+    await login(form.email, form.password);
+
+    setDone(true);
+    setTimeout(() => close(), 1500);
+
+  } catch (err: any) {
+    const message =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Invalid email or password";
+
+    setApiError(message);
+  }
+};
   return (
     <div className="animate-[fadeIn_0.4s_ease]">
       <h2 className="text-[28px] font-black text-green-900 font-playfair mb-1">
-        Welcome back 👋
+        Welcome back
       </h2>
 
       <p className="text-gray-500 text-sm mb-7 font-dmSans">
@@ -49,22 +91,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
 
       {done ? (
         <div className="text-center py-8">
-          <div className="text-6xl mb-4">✅</div>
+          <div className="text-6xl mb-4 flex items-center justify-center p-2"><CheckCircle className=" size-14 text-forest-500" /></div>
 
           <h3 className="text-xl font-extrabold text-green-900 font-playfair mb-2">
-            You're in!
+            Login Successful!
           </h3>
 
-          <p className="text-gray-500 text-sm font-dmSans">
+          {/* <p className="text-gray-500 text-sm font-dmSans">
             Redirecting to your dashboard...
-          </p>
+          </p> */}
         </div>
       ) : (
         <>
+
+          {apiError && (
+            <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg">
+              {apiError}
+            </div>
+          )}
+
           {/* Social Login */}
           <div className="flex gap-2.5 mb-6">
-            <SocialBtn icon="G" label="Google" />
-            <SocialBtn icon="f" label="Facebook" />
+            <SocialBtn icon={<GrGoogle />} label="Google" />
+            <SocialBtn icon={<FaFacebook />} label="Facebook" />
           </div>
 
           {/* Divider */}
@@ -81,7 +130,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
             label="Email address"
             type="email"
             placeholder="you@example.com"
-            icon="✉️"
+            icon={<CiMail />}
             value={form.email}
             onChange={(e) =>
               setForm((f) => ({ ...f, email: e.target.value }))
@@ -93,7 +142,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
             label="Password"
             type="password"
             placeholder="Enter your password"
-            icon="🔒"
+            icon={<CiLock />}
             value={form.password}
             onChange={(e) =>
               setForm((f) => ({ ...f, password: e.target.value }))
@@ -128,7 +177,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
           {/* Submit */}
           <button
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loading || done}
             className={`w-full py-3 rounded-xl text-white  font-bold text-[15px] font-dmSans tracking-[0.3px] shadow-lg transition-all
             ${loading
                 ? "bg-green-300"

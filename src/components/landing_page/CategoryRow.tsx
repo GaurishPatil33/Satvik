@@ -6,10 +6,10 @@ const categories = [
   { emoji: "🫒", name: "Cold-Pressed Oils", slug: "oils" },
   { emoji: "🍯", name: "Jaggery", slug: "jaggery" },
   { emoji: "🌿", name: "Organic Sugar", slug: "sugar" },
-  { emoji: "🧂", name: "Natural Salt", slug: "salt" },
-  { emoji: "🌾", name: "Flours", slug: "flours" },
-  { emoji: "🫙", name: "Pickles", slug: "pickles" },
-  { emoji: "🌰", name: "Dry Fruits", slug: "dry-fruits" },
+  // { emoji: "🧂", name: "Natural Salt", slug: "salt" },
+  // { emoji: "🌾", name: "Flours", slug: "flours" },
+  // { emoji: "🫙", name: "Pickles", slug: "pickles" },
+  // { emoji: "🌰", name: "Dry Fruits", slug: "dry-fruits" },
   { emoji: "✨", name: "Deals", slug: "deals" },
 ];
 
@@ -20,7 +20,7 @@ export default function CategoryRow() {
         {categories.map((cat, i) => (
           <Link
             key={cat.slug}
-            href={`/category/${cat.slug}`}
+            href={`/products?cat=${cat.slug}`}
             className="flex flex-col items-center gap-2 flex-shrink-0 group"
             style={{ animationDelay: `${i * 60}ms` }}
           >

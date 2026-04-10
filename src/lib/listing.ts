@@ -8,23 +8,23 @@ export type SortType = "popular" | "rating" | "price_asc" | "price_desc" | "newe
 export type ViewType = 3 | 4 | "list";
 export type ConcernType = "heart" | "immunity" | "weight" | "gut" | "skin" | "diabetes" | "bone" | "baby";
 
-// export interface Product {
-//   id: number;
-//   name: string;
-//   sub: string;
-//   emoji: string;
-//   category: CategoryType;
-//   price: number;
-//   mrp: number;
-//   rating: number;
-//   reviews: number;
-//   badge: BadgeType;
-//   sizes: string[];
-//   tags: string[];
-//   concerns: ConcernType[];
-//   isNew: boolean;
-//   discount: number;
-// }
+export interface Product1 {
+  id: number;
+  name: string;
+  sub: string;
+  emoji: string;
+  category: CategoryType;
+  price: number;
+  mrp: number;
+  rating: number;
+  reviews: number;
+  badge: BadgeType;
+  sizes: string[];
+  tags: string[];
+  concerns: ConcernType[];
+  isNew: boolean;
+  discount: number;
+}
 
 export interface FilterState {
   categories: CategoryType[];

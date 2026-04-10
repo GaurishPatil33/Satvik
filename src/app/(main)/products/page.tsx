@@ -3,12 +3,12 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import FilterSidebar from "@/src/components/listing/FilterSidebar";
-import ListingProductCard from "@/src/components/listing/ListingProductCard";
 import SortBar from "@/src/components/listing/SortBar";
 import { FilterState, MAX_PRICE, filterAndSort, ITEMS_PER_PAGE } from "@/src/lib/listing";
 import { products } from "@/src/lib/data";
 import { Pagination } from "@/src/components/listing/Pagination";
 import { MobileFilterDrawer } from "@/src/components/listing/MobilefilterDrawer";
+import { ProductCard } from "@/src/components/product/ProductCard";
 
 const DEFAULT_FILTERS: FilterState = {
   categories: [],
@@ -67,11 +67,11 @@ export default function ListingPage() {
   const scrollToTop = () => mainRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div className="pt-12">
+    <div className="">
    
 
       {/* Page Hero */}
-      <div className="hidden md:block md:relative bg-gradient-to-br from-forest-700 to-forest-500 overflow-hidden py-8 px-5 top-20 mb-10">
+      <div className="hidden md:block md:relative bg-gradient-to-br from-forest-700 to-forest-500 overflow-hidden py-8 px-5 ">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px" }} />
         <div className="absolute top-0 right-0 w-72 h-72 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto relative z-10">
@@ -109,7 +109,7 @@ export default function ListingPage() {
       </div> */}
 
       {/* Main layout */}
-      <div className="max-w-7xl mx-auto px-5 py-6 flex gap-6 items-start mt-16" >
+      <div className="max-w-7xl mx-auto px-5 py-6 flex gap-6 items-start" >
 
         {/* Sidebar — desktop */}
         <div className="w-64 flex-shrink-0 hidden lg:block sticky top-24">
@@ -153,10 +153,16 @@ export default function ListingPage() {
           ) : (
             <div className={`grid gap-4 ${gridClass}`}>
               {paginated.map(product => (
-                <ListingProductCard key={product.id} product={product} view={filters.view} />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
+
+          <div className={`grid gap-4 ${gridClass}`}>
+              {products.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
 
           <Pagination
             page={filters.page}

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { Heart, ShoppingCart, Star } from "lucide-react";
-import { ViewType } from "@/src/lib/listing";
-import { Product } from "@/src/lib/types";
+import { Product1, ViewType } from "@/src/lib/listing";
 
 const BADGE_MAP = {
   bestseller: { label: "⭐ Best Seller", className: "bg-amber-100 text-amber-800" },
@@ -18,7 +17,7 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 interface Props {
-  product: Product;
+  product: Product1;
   view: ViewType;
 }
 

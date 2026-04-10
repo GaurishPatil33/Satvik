@@ -1,5 +1,5 @@
 import { IUser } from "../types/user-types";
-import { api, apiFetch } from "./api";
+import { api } from "./api";
 
 export interface LoginData {
   email: string;

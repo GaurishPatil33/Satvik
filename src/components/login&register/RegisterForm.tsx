@@ -111,7 +111,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
 
 
     return (
-        <div className="animate-[fadeIn_0.4s_ease]">
+        <div className="animate-[fadeIn_0.4s_ease] md:h-fit max-h-[80%] overflow-y-auto">
             <h2 className="text-[28px] font-black text-green-900 font-playfair mb-1">
                 Join Satvik
             </h2>
@@ -134,7 +134,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
 
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                         <p className="text-sm text-green-800 font-dmSans">
-                            🎁 We've sent a <strong>10% off coupon</strong> to your email.
+                             We've sent a <strong>10% off coupon</strong> to your email.
                         </p>
                     </div>
 
@@ -234,7 +234,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
                             <InputField
                                 label="Mobile Number"
                                 type="tel"
-                                placeholder="+91 98765 43210"
+                                placeholder="+91 99999 99999"
                                 icon={<CiMobile3 />}
                                 hint="We'll send your order updates here"
                                 value={form.phone}
@@ -358,7 +358,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
                                         }`}
                                 // className="w-full py-3 rounded-xl text-white font-bold bg-gradient-to-br from-green-500 to-green-700 shadow-lg hover:scale-[1.02] disabled:bg-gray-300 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? "Creating account..." : "Create Account 🌿"}
+                                    {loading ? "Creating account..." : "Create Account "}
                                 </button>
                             </>
                         )}

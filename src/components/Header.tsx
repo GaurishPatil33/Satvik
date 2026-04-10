@@ -25,11 +25,11 @@ export default function Header() {
 
   const handleUserClick = () => {
     if (!isAuthenticated) {
-      openLogin(); // open login/signup modal
+      openLogin(); 
       return;
     }
 
-    router.push("/account");
+    // router.push("/account");
   };
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function Header() {
         }`}
     >
       {/* Top announcement bar */}
-      <div className="bg-forest text-cream text-xs font-body font-medium text-center py-2 px-4 tracking-wide">
+      <div className={`bg-forest text-cream text-xs font-body font-medium text-center py-2 px-4 tracking-wide ${scrolled &&" hidden"}`}>
         🌿 Free delivery on orders above ₹499 &nbsp;|&nbsp; Use code <span className="font-semibold text-gold-light">SATVIK10</span> for 10% off
       </div>
 
@@ -77,7 +77,7 @@ export default function Header() {
           <div
             className={`hidden md:flex flex-1 max-w-xl mx-auto items-center gap-2 rounded-full border transition-all duration-300 px-4 py-2.5 ${searchFocused
               ? 'border-forest bg-white shadow-md shadow-forest/10'
-              : 'border-cream-dark bg-cream-dark/60'
+              : 'border-gold-400 bg-cream-dark/60'
               }`}
           >
             <Search size={16} className={`flex-shrink-0 transition-colors ${searchFocused ? 'text-forest' : 'text-bark-light'}`} />
@@ -103,7 +103,7 @@ export default function Header() {
               <a
                 key={link}
                 href="#"
-                className="text-sm font-body font-medium text-bark/70 hover:text-bark transition-colors duration-200 relative group"
+                className="text-sm font-body font-medium text-forest-700 hover:text-bark transition-colors duration-200 relative group"
               >
                 {link}
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-forest group-hover:w-full transition-all duration-300" />

@@ -3,8 +3,10 @@
 import { Customer, customers } from "@/src/lib/adminData";
 import { formatPrice, cn } from "@/src/lib/utils";
 import { MapPin, ShoppingBag, TrendingUp, Mail, Phone, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SectionCard } from "../../components/Ui";
+import { useAdminUsers } from "@/src/hooks/useAdminUsers";
+import { useAuth } from "@/src/hooks/useAuth";
 
 
 function CustomerRow({ customer, onClick }: { customer: Customer; onClick: () => void }) {
@@ -151,6 +153,12 @@ export default function CustomersPage() {
   const [filter, setFilter] = useState<"all" | "active" | "inactive" | "vip">("all");
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
+  const { users, fetchUsers } = useAdminUsers()
+  const { user, isReady } = useAuth()
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   const filtered = customers.filter((c) => {
     const matchSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -173,6 +181,16 @@ export default function CustomersPage() {
           <p className="text-sm text-gray-500 font-body mt-0.5">{customers.length} registered customers</p>
         </div>
       </div>
+
+      {users.map(u => (
+        <div className=" flex flex-col bg-red-50 text-gray-500 ">
+
+          <div className="">{u.first_name}</div>
+          <div className="">{u.last_name}</div>
+          <div className="">{u.email}</div>
+        </div>
+      ))}
+
 
       {/* Quick stats */}
       <div className="grid md:grid-cols-2 sm:grid-cols-4 gap-4">

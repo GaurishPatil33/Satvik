@@ -21,6 +21,12 @@ const videos = [
     title: 'From Farm to Bottle',
     duration: '5:12', src: null
   },
+  {
+    thumb: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&q=80',
+
+    title: 'From Farm to Bottle',
+    duration: '5:12', src: null
+  },
 
 ]
 
@@ -63,12 +69,12 @@ export default function VideoSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="flex items-center gap-5 overflow-x-auto">
           {videos.map((v, i) => (
             <button
               key={i}
               onClick={() => setPlaying(i)}
-              className="group relative rounded-2xl overflow-hidden aspect-video text-left"
+              className="group relative rounded-2xl overflow-hidden aspect-auto  h-40 w-160 text-left"
             >
               <img
                 src={v.thumb}

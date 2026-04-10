@@ -58,27 +58,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
     return !newErrors.email && !newErrors.password;
   };
 
-const handleSubmit = async () => {
-  setApiError(null);
+  const handleSubmit = async () => {
+    setApiError(null);
 
-  const isValid = validateForm();
-  if (!isValid) return;
+    const isValid = validateForm();
+    if (!isValid) return;
 
-  try {
-    await login(form.email, form.password);
+    try {
+      await login(form.email, form.password);
 
-    setDone(true);
-    setTimeout(() => close(), 1500);
+      setDone(true);
+      setTimeout(() => close(), 1500);
 
-  } catch (err: any) {
-    const message =
-      err?.response?.data?.message ||
-      err?.message ||
-      "Invalid email or password";
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Invalid email or password";
 
-    setApiError(message);
-  }
-};
+      setApiError(message);
+    }
+  };
   return (
     <div className="animate-[fadeIn_0.4s_ease]">
       <h2 className="text-[28px] font-black text-green-900 font-playfair mb-1">
@@ -136,6 +136,9 @@ const handleSubmit = async () => {
               setForm((f) => ({ ...f, email: e.target.value }))
             }
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs -mt-3 mb-2">{errors.email}</p>
+          )}
 
           {/* Password */}
           <InputField
@@ -148,7 +151,10 @@ const handleSubmit = async () => {
               setForm((f) => ({ ...f, password: e.target.value }))
             }
           />
-
+          {errors.password && (
+            <p className="text-red-500 text-xs -mt-3 mb-2">{errors.password}</p>
+          )}
+          
           {/* Remember + Forgot */}
           <div className="flex justify-between items-center -mt-2 mb-6">
             <label className="flex items-center gap-2 cursor-pointer">

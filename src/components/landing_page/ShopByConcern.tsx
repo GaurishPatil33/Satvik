@@ -3,26 +3,28 @@ import { useState } from 'react'
 import { ShoppingCart } from 'lucide-react'
 import { products } from '@/src/lib/data'
 import { ProductCard } from '../product/ProductCard'
+import { FaShieldAlt, FaTint, FaWeight } from 'react-icons/fa'
+import { GiStomach } from 'react-icons/gi'
 
 const concerns = [
   {
     name: 'Weight Loss',
-    icon: '⚖️',
+    icon: <FaWeight />,
 
   },
   {
     name: 'Gut Health',
-    icon: '🌿',
+    icon: <GiStomach />,
 
   },
   {
     name: 'Immunity',
-    icon: '🛡️',
+    icon: <FaShieldAlt />,
 
   },
   {
     name: 'Diabetes Care',
-    icon: '💉',
+    icon: <FaTint />,
 
   },
 ]
@@ -38,7 +40,7 @@ export default function ShopByConcern() {
             <span className="w-4 h-px bg-forest inline-block" /> Personalised Picks
           </p>
           <h2
-            className="text-3xl sm:text-4xl font-display font-bold text-bark"
+            className="text-3xl sm:text-4xl font-display font-bold text-forest-800"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             Shop by Concern
@@ -54,10 +56,10 @@ export default function ShopByConcern() {
               onClick={() => setActive(i)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-body font-medium transition-all duration-300 border ${active === i
                 ? 'bg-forest text-cream border-forest shadow-md'
-                : 'bg-cream border-cream-dark text-bark hover:border-forest/30'
+                : 'bg-cream border-cream-dark text-forest-600 hover:border-forest/30'
                 }`}
             >
-              <span className="text-xl">{c.icon}</span>
+              <span className="text-xl ">{c.icon}</span>
               <span className="text-left leading-tight">{c.name}</span>
             </button>
           ))}
@@ -65,8 +67,8 @@ export default function ShopByConcern() {
 
         {/* Products for selected concern */}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {products.slice(0,4).map((p) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {products.slice(0, 4).map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

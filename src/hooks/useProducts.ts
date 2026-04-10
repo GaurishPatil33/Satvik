@@ -5,12 +5,16 @@ import { IProduct } from "../types/products-types";
 export const useProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string|null>(null);
 
   const fetchProducts = async () => {
     setLoading(true);
+    setError(null)
     try {
       const data = await productService.getProducts();
       setProducts(data);
+    }catch(err:any){
+      setError(err)
     } finally {
       setLoading(false);
     }

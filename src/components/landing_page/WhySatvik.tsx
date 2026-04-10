@@ -46,7 +46,7 @@ export default function WhySatvik() {
             <span className="w-4 h-px bg-forest inline-block" /> Our Promise
           </p>
           <h2
-            className="text-3xl sm:text-4xl font-display font-bold text-bark leading-tight"
+            className="text-3xl sm:text-4xl font-display font-bold text-forest-800 leading-tight"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             Why Choose <em className="not-italic text-forest">Satvik</em>?

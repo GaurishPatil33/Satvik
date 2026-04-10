@@ -116,9 +116,9 @@ const router=useRouter()
         {/* Add to cart */}
         <button
           onClick={handleAdd}
-          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-body font-semibold transition-all duration-300 ${added
-            ? 'bg-forest text-cream scale-95'
-            : 'bg-bark text-cream hover:bg-forest hover:scale-[1.02]'
+          className={`w-full flex items-center justify-center border-[1px] gap-2 py-2.5 rounded-xl text-sm font-body font-semibold transition-all duration-300 ${added
+            ? 'bg-forest text-cream-100 border-forest-800 scale-95'
+            : 'bg-cream text-bark border-cream-400 hover:bg-forest hover:scale-[1.02] hover:text-cream-50 '
             }`}
         >
           <ShoppingCart size={15} />

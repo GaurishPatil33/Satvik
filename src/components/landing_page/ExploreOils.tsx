@@ -3,27 +3,29 @@ import { useState } from 'react'
 import { ShoppingCart } from 'lucide-react'
 import { products } from '@/src/lib/data'
 import { ProductCard } from '../product/ProductCard'
+import { GiCoconuts, GiPeanut } from 'react-icons/gi'
+import { FaLeaf, FaSeedling, FaSun } from 'react-icons/fa'
 
 const oils = [
   {
     name: 'Groundnut',
-    emoji: '🥜',
+    emoji: <GiPeanut/>,
   },
   {
     name: 'Mustard',
-    emoji: '🌻',
+    emoji: <FaSeedling/>,
   },
   {
     name: 'Sunflower',
-    emoji: '🌼',
+    emoji: <FaSun/>,
   },
   {
     name: 'Olive',
-    emoji: '🫒',
+    emoji: <FaLeaf/>,
   },
   {
     name: 'Coconut',
-    emoji: '🥥',
+    emoji: <GiCoconuts/>,
   },
 ]
 
@@ -39,7 +41,7 @@ export default function ExploreOils() {
             <span className="w-4 h-px bg-forest inline-block" /> Explore Range
           </p>
           <h2
-            className="text-3xl sm:text-4xl font-display font-bold text-bark"
+            className="text-3xl sm:text-4xl font-display font-bold text-forest-800"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             Our Cold-Pressed Oils
@@ -54,7 +56,7 @@ export default function ExploreOils() {
               onClick={() => setSelected(i)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-body font-medium transition-all duration-300 ${selected === i
                   ? 'bg-forest text-cream shadow-md'
-                  : 'bg-cream border border-cream-dark text-bark hover:border-forest/30'
+                  : 'bg-cream border border-cream-dark text-forest-600 hover:border-forest/30'
                 }`}
             >
               <span>{o.emoji}</span>
@@ -64,7 +66,7 @@ export default function ExploreOils() {
         </div>
 
         {/* Selected oil detail */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {products.slice(0,6).map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

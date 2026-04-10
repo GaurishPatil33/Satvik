@@ -1,30 +1,31 @@
+
 import { IProduct } from "../types/products-types";
-import { apiFetch } from "./api";
+import { api } from "./api";
 
-export const getProducts = async () => {
-  return apiFetch("/products");
+/* GET ALL */
+export const getProducts = async (): Promise<IProduct[]> => {
+  return api.get("/products");
 };
 
-export const getProductById = async (id: string) => {
-  return apiFetch(`/products/${id}`);
+/* GET BY ID */
+export const getProductById = async (id: string): Promise<IProduct> => {
+  return api.get(`/products/${id}`);
 };
 
-export const createProduct = async (data: Partial<IProduct>) => {
-  return apiFetch("/products", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+/* CREATE */
+export const createProduct = async (data: Partial<IProduct>): Promise<IProduct> => {
+  return api.post("/products", data);
 };
 
-export const updateProduct = async (id: string, data: Partial<IProduct>) => {
-  return apiFetch(`/products/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+/* UPDATE */
+export const updateProduct = async (
+  id: string,
+  data: Partial<IProduct>
+): Promise<IProduct> => {
+  return api.put(`/products/${id}`, data);
 };
 
-export const deleteProduct = async (id: string) => {
-  return apiFetch(`/products/${id}`, {
-    method: "DELETE",
-  });
+/* DELETE */
+export const deleteProduct = async (id: string): Promise<void> => {
+  return api.delete(`/products/${id}`);
 };

@@ -2,12 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import {
-  Star, Shield, Truck, RotateCcw, CheckCircle,
-  Heart, ShoppingCart, Zap, Share2, Copy, Check,
+  Star, Truck, RotateCcw,
+  Heart, ShoppingCart, Zap, Copy, Check,
   ChevronRight, Package,
-  Lock,
-  TruckIcon,
-  CheckSquareIcon
+
 } from "lucide-react";
 import { InfoTabs } from "@/src/components/product/info/InfoTabs";
 import { useParams } from "next/navigation";
@@ -18,6 +16,9 @@ import MediaGallery from "@/src/components/product/media/MediaGallery";
 import Loading from "@/src/components/Loading";
 import { TbRotateClockwise } from "react-icons/tb";
 import { ProductCard } from "@/src/components/product/ProductCard";
+import StickyAddToCartBar from "@/src/components/product/info/StickyBar";
+import { RiSecurePaymentLine, RiTruckLine } from "react-icons/ri";
+import { PiCertificate } from "react-icons/pi";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 interface SizeOption {
@@ -46,56 +47,9 @@ const SIZES: SizeOption[] = [
   { label: "5L", price: 1150 },
 ];
 
-const THUMBS = ["🫒", "🏭", "🌾", "📦", "🥜"];
-
-const BENEFITS = [
-  {
-    icon: "❤️", bg: "#FEF3C7", title: "Heart Health",
-    text: "Rich in monounsaturated fatty acids (oleic acid) that help maintain healthy cholesterol levels and support cardiovascular wellness."
-  },
-  {
-    icon: "🧠", bg: "#FFF1F2", title: "Vitamin E Powerhouse",
-    text: "Naturally packed with tocopherols — a potent antioxidant that protects cells from oxidative damage and supports skin health."
-  },
-  {
-    icon: "🦴", bg: "#F0FDF4", title: "Joint & Bone Support",
-    text: "Contains resveratrol and phytosterols with anti-inflammatory properties, supporting joint health and reducing inflammation."
-  },
-  {
-    icon: "✨", bg: "#EFF6FF", title: "Skin & Hair Nourishment",
-    text: "Vitamin E and fatty acids deeply moisturise skin and strengthen hair. A traditional massage oil used for generations."
-  },
-  {
-    icon: "🔥", bg: "#FEFCE8", title: "Suitable for High Heat",
-    text: "Natural smoke point of ~160°C makes it excellent for everyday Indian cooking — tadkas, sautéing, and shallow frying."
-  },
-  {
-    icon: "🧬", bg: "#FDF4FF", title: "Rich in Phytonutrients",
-    text: "Unrefined pressing retains all naturally occurring polyphenols, sterols, and squalene — lost entirely in refined oils."
-  },
-];
-
-const HOW_TO_USE = [
-  { icon: "🍳", title: "Everyday Cooking", text: "Use for tadkas, sautéing vegetables, rotis, or shallow frying. Ideal for Indian cuisine. Smoke point: ~160°C." },
-  { icon: "🥗", title: "Salad Dressing", text: "Drizzle over salads or mix with lemon juice and rock salt for a simple, flavourful vinaigrette." },
-  { icon: "💆", title: "Body Massage", text: "Warm slightly and apply for a traditional body massage. Deeply nourishing for skin and joints." },
-  { icon: "💇", title: "Hair Care", text: "Apply to scalp 30 mins before washing. Strengthens hair roots and reduces breakage." },
-  { icon: "🌅", title: "Oil Pulling", text: "Swish 1 tablespoon for 10–15 mins before breakfast. An ancient Ayurvedic practice for oral health." },
-  { icon: "📦", title: "Storage Tips", text: "Store cool and dry, away from sunlight. Don't refrigerate. Cloudiness = purity. Shake before use." },
-];
-
-const REVIEWS: Review[] = [
-  { name: "Priya Menon", location: "Bangalore", avatar: "🧕", rating: 5, title: "Finally, oil that actually smells like groundnut!", text: "Switched to Satvik after my nutritionist's advice. The difference is immediate — the aroma when you open the bottle is incredible. My food tastes richer and more authentic.", product: "1000ml", date: "3 weeks ago", helpful: 32, verified: true },
-  { name: "Dr. Vikram Nair", location: "Hyderabad", avatar: "👨‍⚕️", rating: 5, title: "Recommending this to all my patients", text: "As a cardiologist, I'm particular about cooking oils. Satvik's cold-pressed groundnut oil has the right fatty acid profile — high oleic acid, natural Vitamin E, zero trans fats. Consistent quality across batches.", product: "5L", date: "1 month ago", helpful: 78, verified: true },
-  { name: "Rekha Sharma", location: "Jaipur", avatar: "👩‍🍳", rating: 4, title: "Great oil, slight cloudiness at first", text: "Excellent for cooking — the flavour is authentic and my family loves it. Was initially concerned about cloudiness but it's natural sedimentation from unrefined pressing. Shakes clear easily.", product: "2L", date: "2 months ago", helpful: 19, verified: true },
-];
 
 
 
-const RATING_BREAKDOWN = [
-  { star: 5, pct: 89 }, { star: 4, pct: 7 },
-  { star: 3, pct: 2 }, { star: 2, pct: 1 }, { star: 1, pct: 1 },
-];
 
 type TabId = "description" | "benefits" | "nutrition" | "how-to-use" | "reviews";
 const TABS: { id: TabId; label: string }[] = [
@@ -143,11 +97,17 @@ export default function ProductPage() {
 
   // Sticky bar visibility
   useEffect(() => {
+    const element = addBtnRef.current
+    if (!element) return
+
     const observer = new IntersectionObserver(
-      ([entry]) => setStickyVisible(!entry.isIntersecting),
-      { threshold: 0 }
+      ([entry]) => {
+        setStickyVisible(!entry.isIntersecting)
+      },
+      { root: null, threshold: 0.1 }
     );
-    if (addBtnRef.current) observer.observe(addBtnRef.current);
+
+    observer.observe(element)
     return () => observer.disconnect();
   }, []);
 
@@ -172,7 +132,7 @@ export default function ProductPage() {
   const savings = originalPrice - discountedPrice;
   const savingsPct = originalPrice > 0 ? Math.round((savings / originalPrice) * 100) : 0;
 
-// fetching product
+  // fetching product
   useEffect(() => {
     if (!id) return
 
@@ -201,7 +161,7 @@ export default function ProductPage() {
 
 
   return (
-    <div className="mt-28 mx-auto">
+    <div className="mx-auto">
 
       {/* Breadcrumb */}
       <nav className="max-w-7xl mx-auto px-5 py-3 hidden md:flex items-center gap-1.5 text-xs font-dm flex-wrap top-20 mt-28 ">
@@ -355,24 +315,24 @@ export default function ProductPage() {
               onClick={() => setWishlisted(!wishlisted)}
               className={`w-12 h-12 rounded-xl border-2 flex items-center justify-center transition-all duration-200 ${wishlisted
                 ? "border-rose-400 bg-rose-50 text-rose-500"
-                : "border-cream bg-white text-gray-400 hover:border-rose-300 hover:bg-rose-50"
+                : "border-cream bg-white text-gray-400 hover:border-forest-800 hover:bg-gold-300/30"
                 }`}
             >
               <Heart className={`w-5 h-5 ${wishlisted ? "fill-rose-500" : ""}`} />
             </button>
           </div>
 
-          <button className="w-full h-12 bg-white text-forest border-2 border-forest rounded-xl font-dm font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-gold/70 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-forest/15 mb-4">
+          <button className="w-full h-12 bg-white text-forest border-2 border-forest rounded-xl font-dm font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-gold-300/30 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-forest/15 mb-4">
             <Zap className="w-4 h-4" /> Buy Now
           </button>
 
           {/* Trust badges */}
           <div className="grid grid-cols-4 gap-2 mb-4">
             {[
-              { icon: <Lock/>, text: "Secure Payment" },
-              { icon: <RotateCcw/>, text: "7-Day Returns" },
-              { icon: <TruckIcon/>, text: "Free Delivery ₹499+" },
-              { icon: <CheckSquareIcon/>, text: "FSSAI Certified" },
+              { icon: <RiSecurePaymentLine />, text: "Secure Payment" },
+              { icon: <TbRotateClockwise />, text: "7-Day Returns" },
+              { icon: <RiTruckLine />, text: "Free Delivery ₹499+" },
+              { icon: <PiCertificate />, text: "FSSAI Certified" },
             ].map((b) => (
               <div key={b.text} className="bg-cream-100 border border-cream-300 rounded-xl p-2.5 text-center">
                 <span className="text-lg  mb-1 flex items-center justify-center text-forest-800">{b.icon}</span>
@@ -417,196 +377,10 @@ export default function ProductPage() {
         </div>
       </div >
 
-      
+
 
       {/* ── TABS ── */}
-      < div className="max-w-7xl mx-auto px-5 mt-8" >
-        <div className="flex border-b-2 border-cream-200 overflow-x-auto gap-0">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-3.5 text-sm font-dm font-semibold whitespace-nowrap border-b-[3px] -mb-[2px] transition-all ${activeTab === tab.id
-                ? "border-forest-500 text-forest-600"
-                : "border-transparent text-gray-400 hover:text-forest-500"
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="py-7 pb-12">
-
-          {/* Description */}
-          {activeTab === "description" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-3">
-                <h3 className="font-playfair text-xl font-bold text-gray-900">Pure Tradition in a Bottle</h3>
-                <p className="text-sm font-dm text-gray-500 leading-loose">Satvik's Wood Pressed Groundnut Oil is cold-extracted using the age-old <em>Kolhu</em> (wooden press) method, running at low RPM to ensure the oil never exceeds 45°C. This careful process preserves the natural aroma, golden colour, and full nutritional profile of organically-grown groundnuts.</p>
-                <p className="text-sm font-dm text-gray-500 leading-loose">Unlike commercially refined oils that go through bleaching, deodorising, and chemical solvent extraction, our oil is single-ingredient — just groundnuts. Nothing added. Nothing removed.</p>
-                <p className="text-sm font-dm font-semibold text-gray-700">What you'll notice:</p>
-                <ul className="list-disc list-inside space-y-1.5">
-                  {["Rich, nutty aroma that fills your kitchen when cooking", "Golden amber colour — natural cloudiness is a sign of purity", "Higher smoke point (~160°C) for everyday Indian cooking", "No harsh aftertaste; lets the flavours of your food shine"].map((item) => (
-                    <li key={item} className="text-sm font-dm text-gray-500 leading-relaxed">{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-cream-100 border border-cream-200 rounded-2xl p-5">
-                <h4 className="font-playfair font-bold text-base text-gray-900 mb-4">Product Details</h4>
-                {[
-                  ["Ingredients", "Organic Groundnuts (100%)", false],
-                  ["Press Method", "Wood Kolhu (Cold-Pressed)", true],
-                  ["Processing Temp", "Below 45°C", true],
-                  ["Filtered?", "Gravity-Filtered, Unrefined", false],
-                  ["Shelf Life", "12 months from pressing", false],
-                  ["Storage", "Cool, dry, away from sunlight", false],
-                  ["Origin", "India 🇮🇳", false],
-                  ["Certifications", "FSSAI · Organic India", true],
-                  ["Packaging", "BPA-Free PET / Glass bottle", false],
-                ].map(([key, val, green]) => (
-                  <div key={String(key)} className="flex justify-between items-center py-2.5 border-b border-cream-200 last:border-b-0 gap-3">
-                    <span className="text-[11px] font-dm font-bold text-gray-400 uppercase tracking-wider flex-shrink-0">{key}</span>
-                    <span className={`text-xs font-dm font-semibold text-right ${green ? "text-forest-500" : "text-gray-700"}`}>{val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Benefits */}
-          {activeTab === "benefits" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {BENEFITS.map((b) => (
-                <div key={b.title} className="bg-white border border-cream-200 rounded-2xl p-5 flex gap-4 hover:shadow-lg transition-shadow">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: b.bg }}>{b.icon}</div>
-                  <div>
-                    <h4 className="font-dm font-bold text-sm text-gray-800 mb-1.5">{b.title}</h4>
-                    <p className="text-xs font-dm text-gray-500 leading-relaxed">{b.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Nutrition */}
-          {activeTab === "nutrition" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <div className="bg-white border border-cream-200 rounded-2xl overflow-hidden">
-                  <div className="bg-forest-500 px-5 py-4">
-                    <h3 className="font-playfair font-semibold text-base text-white">Nutritional Information</h3>
-                    <p className="text-[11px] text-white/70 mt-0.5">Per 100ml serving</p>
-                  </div>
-                  {[
-                    ["Energy", "884 kcal", false, true],
-                    ["Total Fat", "100g", false, true],
-                    ["— Saturated Fat", "17g", true, false],
-                    ["— Monounsaturated", "46g", true, false],
-                    ["— Polyunsaturated", "32g", true, false],
-                    ["Trans Fat", "0g ✓", false, false, true],
-                    ["Cholesterol", "0mg ✓", false, false, true],
-                    ["Vitamin E", "15.7mg", false, false],
-                    ["Carbohydrates", "0g", false, false],
-                    ["Sodium", "0mg ✓", false, false, true],
-                  ].map(([key, val, indent, bold, green]) => (
-                    <div key={String(key)} className={`flex justify-between items-center px-5 py-2.5 border-b border-cream-100 last:border-b-0 text-sm ${indent ? "pl-8" : ""} ${bold ? "font-bold" : ""}`}>
-                      <span className={indent ? "text-gray-400" : "text-gray-500"}>{key}</span>
-                      <span className={`font-semibold ${green ? "text-green-600" : "text-gray-800"}`}>{val}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[11px] text-gray-400 mt-2 px-1 leading-relaxed">* Per 100ml. Values may vary slightly by batch due to natural seed variation.</p>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-playfair font-bold text-base text-gray-900 mb-1">Certifications & Quality</h4>
-                {[
-                  { icon: "🏛️", name: "FSSAI Certified", desc: "Licence No. 10023022003015. All products comply with Indian food safety standards." },
-                  { icon: "🌿", name: "Organic India Certified", desc: "Seeds from farms certified under National Programme for Organic Production (NPOP)." },
-                  { icon: "🔬", name: "Lab Tested — Every Batch", desc: "Third-party tested for pesticide residues, heavy metals, and microbial safety before dispatch." },
-                  { icon: "♻️", name: "Eco-Friendly Packaging", desc: "BPA-free bottles. Glass option available. Recyclable caps and soy-based ink labels." },
-                ].map((c) => (
-                  <div key={c.name} className="bg-white border border-cream-200 rounded-xl p-4 flex gap-3 items-start">
-                    <span className="text-2xl flex-shrink-0">{c.icon}</span>
-                    <div><p className="font-dm font-bold text-sm text-gray-800 mb-0.5">{c.name}</p><p className="text-xs text-gray-500 leading-relaxed">{c.desc}</p></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* How to Use */}
-          {activeTab === "how-to-use" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {HOW_TO_USE.map((h) => (
-                <div key={h.title} className="bg-white border border-cream-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
-                  <span className="text-4xl block mb-3">{h.icon}</span>
-                  <h4 className="font-dm font-bold text-sm text-gray-800 mb-2">{h.title}</h4>
-                  <p className="text-xs font-dm text-gray-500 leading-relaxed">{h.text}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Reviews */}
-          {activeTab === "reviews" && (
-            <div>
-              <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-8 mb-8 items-center">
-                <div className="bg-gradient-to-br from-forest-700 to-forest-500 rounded-2xl p-7 text-center text-white">
-                  <div className="font-playfair text-6xl font-bold leading-none">4.9</div>
-                  <div className="text-amber-300 text-xl tracking-wider my-1.5">★★★★★</div>
-                  <div className="text-xs text-white/60">Based on 1,240 reviews</div>
-                </div>
-                <div className="space-y-2">
-                  {RATING_BREAKDOWN.map((r) => (
-                    <div key={r.star} className="flex items-center gap-3">
-                      <span className="text-xs font-dm font-semibold text-gray-500 w-8 flex-shrink-0">{r.star} ★</span>
-                      <div className="flex-1 h-2 bg-cream-200 rounded-full overflow-hidden">
-                        <div className="h-full bg-amber-400 rounded-full transition-all duration-700" style={{ width: `${r.pct}%` }} />
-                      </div>
-                      <span className="text-xs font-dm text-gray-400 w-8 text-right flex-shrink-0">{r.pct}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {REVIEWS.map((r, i) => (
-                  <div key={i} className="bg-white border border-cream-200 rounded-2xl p-5 relative overflow-hidden hover:shadow-md transition-shadow">
-                    <span className="absolute top-3 right-4 font-playfair text-6xl text-forest-500/6 leading-none pointer-events-none">"</span>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-cream-200 rounded-full flex items-center justify-center text-lg flex-shrink-0">{r.avatar}</div>
-                      <div>
-                        <p className="font-dm font-bold text-sm text-gray-800">{r.name}</p>
-                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <StarRow rating={r.rating} size={11} />
-                          {r.verified && <span className="text-[10px] font-bold bg-green-50 text-green-600 px-2 py-0.5 rounded-full">✓ Verified</span>}
-                          <span className="text-[11px] text-gray-400">{r.date} · {r.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="font-dm font-bold text-sm text-gray-800 mb-1.5">{r.title}</p>
-                    <p className="text-sm font-dm text-gray-500 leading-relaxed">{r.text}</p>
-                    <div className="flex items-center gap-3 mt-3 pt-3 border-t border-cream-100 flex-wrap">
-                      <span className="text-[11px] font-bold bg-forest-50 text-forest-500 px-2.5 py-0.5 rounded-full">{r.product}</span>
-                      <button className="ml-auto text-xs text-gray-400 border border-cream-300 rounded-full px-3 py-1 hover:border-forest-400 hover:text-forest-500 transition-colors">
-                        👍 Helpful ({r.helpful})
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-center mt-6">
-                <button className="bg-forest-50 border border-forest-300/40 text-forest-600 font-dm font-bold text-sm px-7 py-3 rounded-full hover:bg-forest-100 transition-colors">
-                  Load More Reviews
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div >
-
-      {/* <InfoTabs /> */}
+      <InfoTabs />
 
       {/* Related Products */}
       <div className="max-w-7xl mx-auto px-5 pb-16">
@@ -618,38 +392,25 @@ export default function ProductPage() {
           <a href="/products" className="text-sm font-dm font-bold text-forest-500 hover:text-forest-600 transition-colors">View all →</a>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {relatedlproducts?.slice(0,4).map((p) => (
-            <ProductCard key={p.id} product={p}/>
+          {relatedlproducts?.slice(0, 4).map((p) => (
+            <ProductCard key={p.id} product={p} />
           ))}
         </div>
       </div>
 
 
       {/* ── Sticky Cart Bar ── */}
-      <div
-        className={`fixed bottom-0 left-0 right-0 bg-white border-t border-cream-200 shadow-2xl shadow-black/10 z-50 flex items-center gap-4 px-5 py-3 transition-transform duration-500 ${stickyVisible ? "translate-y-0" : "translate-y-full"
-          }`}
-      >
-        <span className="text-3xl flex-shrink-0">🫒</span>
-        <div>
-          <p className="font-playfair font-semibold text-sm text-gray-900">Wood Pressed Groundnut Oil · {selectedVariant?.size}</p>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <StarRow rating={4.9} size={11} />
-            <span className="text-[11px] text-gray-400">4.9 · 1,240 reviews</span>
-          </div>
-        </div>
-        <span className="font-playfair font-bold text-xl text-forest-600 ml-auto flex-shrink-0">
-          ₹{selectedVariant?.price}
-        </span>
-        <button
-          onClick={handleAddToCart}
-          className={`flex items-center gap-2 font-dm font-bold text-sm px-5 py-2.5 rounded-xl flex-shrink-0 transition-all ${added ? "bg-forest text-white" : "bg-forest hover:bg-forest-600 text-white"
-            }`}
-        >
-          <ShoppingCart className="w-4 h-4" />
-          {added ? "Added ✓" : "Add to Cart"}
-        </button>
-      </div>
+
+      <StickyAddToCartBar
+        visible={stickyVisible}
+        productIcon="🫒"
+        title="Wood Pressed Groundnut Oil"
+        variant={selectedVariant?.size}
+        price={selectedVariant?.price ?? 0}
+        added={added}
+        onAddToCart={handleAddToCart}
+        StarRow={StarRow}
+      />
     </div >
   );
 }

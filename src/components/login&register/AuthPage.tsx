@@ -5,7 +5,7 @@ import LoginForm from "./LoginForm";
 import RegisterPage from "./RegisterForm";
 import Image from "next/image";
 import { useAuthModalStore } from "@/src/store/authModal.store";
-import { FlaskConical, Gift, Truck } from "lucide-react";
+import { FlaskConical, Gift, RefreshCcw, Truck } from "lucide-react";
 
 type Mode = "login" | "register";
 
@@ -14,9 +14,9 @@ export default function AuthPage() {
 
   const features = [
     { icon: <FlaskConical />, text: "100% Organic & Lab Certified" },
-    { icon: <Truck/>, text: "Free delivery on orders ₹499+" },
-    { icon: <Gift/>, text: "10% off on your first order" },
-    { icon: "🔄", text: "7-day hassle-free returns" },
+    { icon: <Truck />, text: "Free delivery on orders ₹499+" },
+    { icon: <Gift />, text: "10% off on your first order" },
+    { icon:<RefreshCcw/>, text: "7-day hassle-free returns" },
   ];
 
   if (!isOpen) return null
@@ -32,7 +32,7 @@ export default function AuthPage() {
 
 
       {/*main */}
-      <div className="relative w-[900px] max-w-[95%] h-[620px] bg-white rounded-2xl overflow-hidden shadow-2xl animate-[fadeIn_0.25s_ease] flex">
+      <div className="relative w-[900px] h-screen md:h-fit max-w-[95%] pt-4 py-2 md:py-0 bg-white rounded-2xl overflow-hidden shadow-2xl animate-[fadeIn_0.25s_ease] flex">
 
         {/* close btn*/}
         <button
@@ -75,7 +75,7 @@ export default function AuthPage() {
               {features.map((f) => (
                 <div key={f.text} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center
-                bg-white/10 text-lg">
+                bg-white/10 text-lg text-white/60">
                     {f.icon}
                   </div>
 
@@ -115,12 +115,12 @@ export default function AuthPage() {
         </div>
 
         {/* righ panel */}
-        <div className="flex flex-1 items-center justify-center p-8 overflow-y-auto">
+        <div className="flex flex-1 items-center justify-center p-8 overflow-y-auto ">
 
           <div className="w-full max-w-md">
 
             {/* Tabs */}
-            <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
+            <div className="flex bg-gray-100 rounded-xl p-1 mb-8 mt-3 pt-3">
               {(["login", "register"] as Mode[]).map((m) => (
                 <button
                   key={m}
@@ -128,7 +128,7 @@ export default function AuthPage() {
                   className={`
                   flex-1 py-2 rounded-lg text-sm transition
                   ${mode === m
-                      ? "bg-white text-green-900 font-semibold shadow"
+                      ? "bg-white text-green-900 font-semibold shadow border-[1px] border-forest-800"
                       : "text-gray-400"
                     }
                 `}

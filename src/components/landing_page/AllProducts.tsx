@@ -68,7 +68,7 @@ export default function AllProducts() {
               <span className="w-4 h-px bg-forest inline-block" /> Browse
             </p>
             <h2
-              className="text-3xl font-display font-bold text-bark"
+              className="text-3xl font-display font-bold text-forest-800"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               All Products
@@ -84,7 +84,7 @@ export default function AllProducts() {
                 className={`px-4 py-1.5 rounded-full text-xs font-body font-medium transition-all duration-200 ${
                   active === f
                     ? 'bg-bark text-cream'
-                    : 'bg-cream border border-bark/15 text-bark/60 hover:border-bark/40 hover:text-bark'
+                    : 'bg-cream border border-bark/15 text-forest-600 hover:border-bark/40 hover:text-bark'
                 }`}
               >
                 {f}
@@ -93,7 +93,7 @@ export default function AllProducts() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

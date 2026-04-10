@@ -7,8 +7,8 @@ import { Product } from "@/src/lib/types";
 import { cn, formatPrice } from "@/src/lib/utils";
 import { SectionCard } from "../../components/Ui";
 import Image from "next/image";
-import ProductModal, { ProductModal1 } from "../../components/product/ProductModal";
 import ProductsTable from "../../components/product/Table";
+import ProductModal from "../../components/product/ProductModal";
 
 
 
@@ -40,6 +40,10 @@ export default function ProductsPage() {
           <Plus size={14} /> Add Product
         </button>
       </div>
+
+
+
+      
 
       {/* Low stock alert */}
       {lowStockProduct && (

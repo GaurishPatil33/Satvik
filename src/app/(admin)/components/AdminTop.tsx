@@ -43,7 +43,7 @@ export function AdminTopbar() {
     }, [searchQuery]);
 
     return (
-        <header className="h-16 bg-white border-b border-gray-100 px-6 lg:px-8 flex items-center justify-between shrink-0 z-10">
+        <header className="h-16 bg-white border-b border-gray-100 px-6 lg:px-8 flex gap-1 items-center justify-between shrink-0 z-10 py-1">
             {/* Left: breadcrumb */}
             <div className="flex items-center gap-2 text-sm font-body">
                 <span className="text-gray-400">Satvik</span>

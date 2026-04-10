@@ -14,7 +14,7 @@ export default function MostLoved() {
               <span className="w-4 h-px bg-forest inline-block" /> Customer Favourites
             </p>
             <h2
-              className="text-3xl sm:text-4xl font-display font-bold text-bark leading-tight"
+              className="text-3xl sm:text-4xl font-display font-bold text-forest-800 leading-tight"
               style={{ fontFamily: 'var(--font-playfair)' }}
             >
               Most Loved
@@ -28,7 +28,7 @@ export default function MostLoved() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {products.slice(0,4).map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

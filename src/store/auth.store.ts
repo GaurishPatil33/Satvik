@@ -2,15 +2,19 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { IUser } from "@/src/types/user-types";
 import {
+  getCurrentUser,
   loginUser,
   registerUser,
 } from "@/src/services/auth.service";
+import { error } from "console";
 
 interface AuthState {
   user: IUser | null;
   token: string | null;
   loading: boolean;
   hasHydrated: boolean;
+  error: string | null
+
   login: (email: string, password: string) => Promise<void>;
   register: (data: {
     first_name: string;
@@ -20,6 +24,7 @@ interface AuthState {
     password: string;
   }) => Promise<void>;
   logout: () => void;
+  fetchCurrentUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -29,6 +34,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       loading: false,
       hasHydrated: false,
+      error: null,
 
       /* LOGIN */
       login: async (email, password) => {
@@ -71,11 +77,31 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
 
-        useAuthStore.persist.clearStorage;
         set({
           user: null,
           token: null,
+          error: null
         });
+        // useAuthStore.persist.clearStorage();
+      },
+
+      fetchCurrentUser: async () => {
+        const token = useAuthStore.getState().token;
+
+        if (!token) return; // no token → skip
+
+        set({ loading: true });
+
+        try {
+          const user = await getCurrentUser();
+
+          set({ user });
+        } catch (err) {
+          // token might be invalid → logout
+          useAuthStore.getState().logout();
+        } finally {
+          set({ loading: false });
+        }
       },
     }),
     {

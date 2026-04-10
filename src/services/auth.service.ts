@@ -37,6 +37,12 @@ export const registerUser = async (data: RegisterData): Promise<IUser> => {
   return res.data
 };
 
+export const logout = async (): Promise<void> => {
+  // return apiFetch("/auth/me");
+  await api.get("/auth/logout")
+};
+
+
 export const getCurrentUser = async (): Promise<IUser> => {
   // return apiFetch("/auth/me");
   const res = await api.get("/auth/me")

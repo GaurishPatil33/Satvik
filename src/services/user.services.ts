@@ -3,7 +3,6 @@ import { IUser } from "@/src/types/user-types";
 
 /* get profle */
 export const getMyProfile = async (): Promise<IUser> => {
-
   const res = await api.get("/users/profile");
   return res.data
 };
@@ -12,13 +11,12 @@ export const getMyProfile = async (): Promise<IUser> => {
 export const updateMyProfile = async (
   data: Partial<IUser>
 ): Promise<IUser> => {
-  const res = await api.put("/users/profile");
+  const res = await api.put("/users/profile",data);
   return res.data
 };
 
 /* delete account */
 export const deleteMyAccount = async (): Promise<void> => {
-
   return api.delete("/users/profile");
 };
 

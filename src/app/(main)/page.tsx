@@ -12,6 +12,7 @@ import WhySatvik from '@/src/components/landing_page/WhySatvik'
 import CategoryRow from '../../components/landing_page/CategoryRow'
 import { useAdminUsers } from '@/src/hooks/useAdminUsers'
 import { useUser } from '@/src/hooks/useUser'
+import MobilUser from '@/src/components/login&register/MobilUser'
 
 export default function Home() {
   const { users } = useAdminUsers()
@@ -35,8 +36,11 @@ export default function Home() {
         <div className="">{u.email}</div>
       ))}</div>
 
+      
       <div className="">{user?.email}</div>
+      
       <Reviews />
+
     </main>
   )
 }

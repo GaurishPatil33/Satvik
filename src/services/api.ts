@@ -34,9 +34,9 @@ export const apiFetch = async (
 
 
 
+// withCredentials:true,
 export const api = axios.create({
   baseURL: API_BASE,
-  // withCredentials:true,
   headers: { "Content-type": "application/json" }
 })
 
@@ -50,16 +50,16 @@ api.interceptors.request.use((config) => {
   return config;
 })
 
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const err = error.response?.data;
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     const err = error.response?.data;
 
-    console.log("API ERROR:", err);
+//     console.log("API ERROR:", err);
 
-    const message =
-      err?.errors?.[0]?.msg || err?.message || "API Error";
+//     const message =
+//       err?.errors?.[0]?.msg || err?.message || "API Error";
 
-    return Promise.reject(new Error(message));
-  }
-);
+//     return Promise.reject(new Error(message));
+//   }
+// );

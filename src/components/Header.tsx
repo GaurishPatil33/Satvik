@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthModalStore } from '../store/authModal.store'
+import MobilUser from './login&register/MobilUser'
 const placeholderOptions = [
   'Cold pressed groundnut oil',
   'Organic jaggery',
@@ -21,11 +22,11 @@ export default function Header() {
   const [searchInput, setSearchInput] = useState<String>("");
   const { user, isAuthenticated, logout } = useAuth()
   const { openLogin } = useAuthModalStore()
-
+  const [openMobLogin, setOpenMobLogin] = useState(false)
 
   const handleUserClick = () => {
     if (!isAuthenticated) {
-      openLogin(); 
+      openLogin();
       return;
     }
 
@@ -60,7 +61,7 @@ export default function Header() {
         }`}
     >
       {/* Top announcement bar */}
-      <div className={`bg-forest text-cream text-xs font-body font-medium text-center py-2 px-4 tracking-wide ${scrolled &&" hidden"}`}>
+      <div className={`bg-forest text-cream text-xs font-body font-medium text-center py-2 px-4 tracking-wide ${scrolled && " hidden"}`}>
         🌿 Free delivery on orders above ₹499 &nbsp;|&nbsp; Use code <span className="font-semibold text-gold-light">SATVIK10</span> for 10% off
       </div>
 
@@ -143,8 +144,13 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className=""></div>
+        <div className="">
+          <MobilUser close={() => !mobileOpen} />
+        </div>
       )}
+
+
+
     </header>
   )
 }

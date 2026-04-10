@@ -153,11 +153,9 @@ export default function CustomersPage() {
   const [filter, setFilter] = useState<"all" | "active" | "inactive" | "vip">("all");
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
-  const { users, fetchUsers } = useAdminUsers()
+  const { users } = useAdminUsers()
   const { user, isReady } = useAuth()
-  useEffect(() => {
-    fetchUsers()
-  }, [])
+  
 
   const filtered = customers.filter((c) => {
     const matchSearch =

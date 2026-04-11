@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthModalStore } from '../store/authModal.store'
 import MobilUser from './login&register/MobilUser'
+import LoginPage from './login&register/MobilUser'
 const placeholderOptions = [
   'Cold pressed groundnut oil',
   'Organic jaggery',
@@ -104,7 +105,7 @@ export default function Header() {
               <a
                 key={link}
                 href="#"
-                className="text-sm font-body font-medium text-forest-700 hover:text-bark transition-colors duration-200 relative group"
+                className="text-sm font-body font-medium text-forest-900 hover:text-bark transition-colors duration-200 relative group"
               >
                 {link}
                 <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-forest group-hover:w-full transition-all duration-300" />
@@ -145,7 +146,7 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="">
-          <MobilUser close={() => !mobileOpen} />
+          <LoginPage />
         </div>
       )}
 

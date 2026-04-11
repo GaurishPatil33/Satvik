@@ -64,7 +64,7 @@ export default function ProductsTable({ products, onEdit, onDelete }: Props) {
                             {/* Price */}
                             <td className="px-5 py-4">
                                 <p className="font-bold text-gray-900 text-sm">
-                                    ₹{product.price}
+                                    ₹{product.variants[0].price}
                                 </p>
                             </td>
 

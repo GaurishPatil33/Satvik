@@ -69,12 +69,12 @@ export default function VideoSection() {
           </p>
         </div>
 
-        <div className="flex items-center gap-5 overflow-x-auto">
+        <div className="flex items-center gap-5 overflow-x-auto pb-2 scrollbar-hide">
           {videos.map((v, i) => (
             <button
               key={i}
               onClick={() => setPlaying(i)}
-              className="group relative rounded-2xl overflow-hidden aspect-auto  h-40 w-160 text-left"
+              className="group relative rounded-2xl overflow-hidden aspect-auto  h-40 min-w-64 text-left"
             >
               <img
                 src={v.thumb}

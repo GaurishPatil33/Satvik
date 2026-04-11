@@ -4,6 +4,7 @@ import { IProduct } from "@/src/types/products-types";
 import { Upload, X } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 
 // interface Props1 {
@@ -239,8 +240,215 @@ import Image from "next/image";
 //     </form>
 //   );
 // }
+interface Props {
+  initialData?: Partial<IProduct>;
+  id?: string;
+  onClose: () => void
+}
 
 
+// https://www.youtube.com/watch?v=87JAdYPC2n0
+
+export function ProductForm({ initialData, id, onClose }: Props) {
+  const router = useRouter()
+  const isEditMode = Boolean(id)
+  const [form, setForm] = useState<Partial<IProduct>>({
+    title: initialData?.title || "",
+    brand: initialData?.brand || "",
+    price: initialData?.price || 0,
+    discount_percentage: initialData?.discount_percentage || 0,
+    category_ids: initialData?.category_ids || [],
+    description: initialData?.description || "",
+    stock_quantity: initialData?.stock_quantity || 0,
+    images: initialData?.images || [],
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [imageInput, setImageInput] = useState("");
+
+  const handleChange = (field: keyof IProduct, value: any) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addImage = () => {
+    if (!imageInput) return;
+    setForm(prev => ({
+      ...prev,
+      images: [...(prev.images || []), imageInput],
+    }));
+    setImageInput("");
+  };
+
+  const removeImage = (index: number) => {
+    setForm(prev => ({
+      ...prev,
+      images: prev.images?.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleCategoryChange = (value: string) => {
+    const arr = value.split(",").map(v => v.trim());
+    setForm(prev => ({ ...prev, category_ids: arr }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      if (isEditMode && id) {
+        await updateProduct(id, form);
+        alert("Product updated!");
+      } else {
+        await createProduct(form);
+        alert("Product created!");
+      }
+
+      router.push("/admin/products");
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+          <h2 className="font-display text-lg font-bold text-gray-900">
+            {isEditMode ? "Edit Product" : "Add New Product"}
+          </h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+            <X size={14} />
+          </button>
+        </div>
+
+        {/* main */}
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-2xl space-y-4 bg-white p-6 rounded-xl shadow"
+        >
+          <h2 className="text-2xl font-bold">
+            {isEditMode ? "Edit Product" : "Create Product"}
+          </h2>
+
+          {/* Title */}
+          <input
+            required
+            placeholder="Title"
+            className="input"
+            value={form.title}
+            onChange={e => handleChange("title", e.target.value)}
+          />
+
+          {/* Brand */}
+          <input
+            placeholder="Brand"
+            className="input"
+            value={form.brand}
+            onChange={e => handleChange("brand", e.target.value)}
+          />
+
+          {/* Price */}
+          <input
+            type="number"
+            required
+            placeholder="Price"
+            className="input"
+            value={form.price}
+            onChange={e => handleChange("price", Number(e.target.value))}
+          />
+
+          {/* Discount */}
+          <input
+            type="number"
+            placeholder="Discount %"
+            className="input"
+            value={form.discount_percentage}
+            onChange={e =>
+              handleChange("discount_percentage", Number(e.target.value))
+            }
+          />
+
+          {/* Stock */}
+          <input
+            type="number"
+            required
+            placeholder="Stock Quantity"
+            className="input"
+            value={form.stock_quantity}
+            onChange={e =>
+              handleChange("stock_quantity", Number(e.target.value))
+            }
+          />
+
+          {/* Categories */}
+          <input
+            placeholder="Category IDs (comma separated)"
+            className="input"
+            value={form.category_ids?.join(",")}
+            onChange={e => handleCategoryChange(e.target.value)}
+          />
+
+          {/* Description */}
+          <textarea
+            placeholder="Description"
+            className="input"
+            value={form.description}
+            onChange={e => handleChange("description", e.target.value)}
+          />
+
+          {/* Image URLs */}
+          <div>
+            <div className="flex gap-2">
+              <input
+                placeholder="Image URL"
+                className="input flex-1"
+                value={imageInput}
+                onChange={e => setImageInput(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={addImage}
+                className="btn"
+              >
+                Add
+              </button>
+            </div>
+
+            <div className="mt-2 space-y-1">
+              {form.images?.map((img, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="truncate">{img}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="text-red-500"
+                  >
+                    remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button disabled={loading} className="btn-primary w-full">
+            {loading ? "Saving..." : "Save Product"}
+          </button>
+        </form>
+
+      </div>
+    </div>
+  )
+
+
+
+
+}
 
 const ProductModal = ({ product, onClose }: { product?: Product | null; onClose: () => void }) => {
   const isEdit = !!product;

@@ -1,5 +1,5 @@
+import { IUser } from "../types/user-types";
 import { api } from "./api";
-import { IUser } from "@/src/types/user-types";
 
 /* get profle */
 export const getMyProfile = async (): Promise<IUser> => {

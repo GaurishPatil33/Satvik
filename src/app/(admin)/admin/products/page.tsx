@@ -184,7 +184,7 @@ export default function ProductsPage() {
             {/* <Image src={p.images[0]} height={100} width={100} alt={p.title} /> */}
             {/* <img src={p.images[0]} alt={p.id} className="size-10" /> */}
 
-            <button onClick={() => setProduct(p)} className=" p-1 bg-blue-500 text-white flex items-center justify-center gap-2"><Pen className="size-4" /> Edit</button>
+            <button onClick={() => setProduct(p)} className=" p-1 rounded-full px-2 bg-blue-500 text-white flex items-center justify-center gap-2"><Pen className="size-4" /> Edit</button>
           </div>
         ))
       }

@@ -165,15 +165,17 @@ export function AdminSidebar() {
             <div className="px-2 py-4 border-t border-white/10">
                 <div
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2",
+                        "flex items-center gap-3 px-3 py-2 justify-end",
                         collapsed && "justify-center"
                     )}
                 >
-                    <div className="w-8 h-8 rounded-full bg-[#C8961C] flex items-center justify-center text-xs font-bold">
-                        {user?.first_name?.[0]}
-                    </div>
 
-                    {!collapsed && (
+
+                    {/* <div className="w-8 h-8 rounded-full bg-[#C8961C] flex items-center justify-center text-xs font-bold">
+                        {user?.first_name?.[0]}
+                    </div> */}
+
+                    {/* {!collapsed && (
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold truncate">
                                 {user?.first_name}
@@ -182,13 +184,19 @@ export function AdminSidebar() {
                                 {user?.email}
                             </p>
                         </div>
-                    )}
+                    )} */}
 
                     <button
                         onClick={logout}
-                        className="text-white/30 hover:text-white"
+                        className="text-white/60 flex items-center gap-2  hover:text-white bg-white/20 p-1.5 rounded-full "
                     >
-                        <LogOut size={14} />
+                        {!collapsed && (
+
+                            <div className="">
+                                Logout
+                            </div>
+                        )}
+                        <LogOut size={20} />
                     </button>
                 </div>
             </div>

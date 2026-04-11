@@ -368,7 +368,7 @@ export default function LoginPage() {
                             </div>
                             <div>
                                 <h1 className="font-display text-3xl font-bold text-brand-forest mb-2">
-                                    You&apos;re in! 🌿
+                                    You&apos;re in! 
                                 </h1>
                                 <p className="font-body text-sm text-brand-earth">
                                     Welcome back. Redirecting to your dashboard…

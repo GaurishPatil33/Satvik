@@ -1,31 +1,39 @@
-
 import { IProduct } from "../types/products-types";
-import { api } from "./api";
+import { api,apiFetch } from "./api";
 
-/* GET ALL */
+
+//get all
 export const getProducts = async (): Promise<IProduct[]> => {
-  return api.get("/products");
+  const res = await api.get("/products");
+  return res.data;
 };
 
-/* GET BY ID */
+
+// Get single product
 export const getProductById = async (id: string): Promise<IProduct> => {
-  return api.get(`/products/${id}`);
+  const res = await api.get(`/products/${id}`);
+  return res.data;
 };
 
-/* CREATE */
+
+// Create
 export const createProduct = async (data: Partial<IProduct>): Promise<IProduct> => {
-  return api.post("/products", data);
+  const res = await api.post("/products", data);
+  return res.data;
 };
 
-/* UPDATE */
+
+// update
 export const updateProduct = async (
   id: string,
   data: Partial<IProduct>
 ): Promise<IProduct> => {
-  return api.put(`/products/${id}`, data);
+  const res = await api.put(`/products/${id}`, data);
+  return res.data;
 };
 
-/* DELETE */
+
+// Delete
 export const deleteProduct = async (id: string): Promise<void> => {
-  return api.delete(`/products/${id}`);
+  await api.delete(`/products/${id}`);
 };

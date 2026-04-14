@@ -10,7 +10,7 @@ const menuItems = [
   { name: "Settings", icon: "⚙️", path: "/settings" },
 ];
 
-export default function Sidebar() {
+export default function MobileSidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (

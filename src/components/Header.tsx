@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useAuthModalStore } from '../store/authModal.store'
 import MobilUser from './login&register/MobilUser'
 import LoginPage from './login&register/MobilUser'
+import MobileSidebar from './MobileMenu'
 const placeholderOptions = [
   'Cold pressed groundnut oil',
   'Organic jaggery',
@@ -146,7 +147,8 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="">
-          <LoginPage />
+          {/* <LoginPage /> */}
+          <MobileSidebar/>
         </div>
       )}
 

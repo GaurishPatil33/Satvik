@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
-import { Play, X } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight, Play, X } from 'lucide-react'
 
 const videos = [
   {
@@ -32,6 +32,17 @@ const videos = [
 
 export default function VideoSection() {
   const [playing, setPlaying] = useState<number | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const scroll = (dir: 'left' | 'right') => {
+    if (!scrollRef.current) return
+
+    const amount = 300
+    scrollRef.current.scrollBy({
+      left: dir === 'left' ? -amount : amount,
+      behavior: 'smooth'
+    })
+  }
+
 
   return (
     <section className="py-16 bg-bark">
@@ -69,7 +80,7 @@ export default function VideoSection() {
           </p>
         </div>
 
-        <div className="flex items-center gap-5 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex items-center gap-5 overflow-x-auto pb-2 scrollbar-hide relative">
           {videos.map((v, i) => (
             <button
               key={i}
@@ -93,6 +104,19 @@ export default function VideoSection() {
               </div>
             </button>
           ))}
+          <div
+            onClick={() => scroll('left')}
+            className="absolute left-0 bg-white/20 p-2 rounded-full cursor-pointer"
+          >
+            <ChevronLeft />
+          </div>
+
+          <div
+            onClick={() => scroll('right')}
+            className="absolute right-0 bg-white/20 p-2 rounded-full cursor-pointer"
+          >
+            <ChevronRight />
+          </div>
         </div>
       </div>
     </section>

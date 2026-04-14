@@ -14,7 +14,7 @@ export interface RegisterData {
   password: string;
 }
 
-/* LOGIN → returns user + token */
+/* LOGIN  returns user + token */
 export const loginUser = async (data: LoginData): Promise<{
   user: IUser;
   token: string;
@@ -27,7 +27,7 @@ export const loginUser = async (data: LoginData): Promise<{
   return res.data
 };
 
-/* REGISTER → returns ONLY USER */
+/* REGISTER */
 export const registerUser = async (data: RegisterData): Promise<IUser> => {
   // return apiFetch("/auth/register", {
   //   method: "POST",
@@ -38,7 +38,7 @@ export const registerUser = async (data: RegisterData): Promise<IUser> => {
 };
 
 export const logout = async (): Promise<void> => {
-  // return apiFetch("/auth/me");
+  // return apiFetch("/auth/logout");
   await api.get("/auth/logout")
 };
 

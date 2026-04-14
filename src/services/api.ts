@@ -34,9 +34,9 @@ export const apiFetch = async (
 
 
 
-// withCredentials:true,
 export const api = axios.create({
   baseURL: API_BASE,
+  // withCredentials:true,
   headers: { "Content-type": "application/json" }
 })
 

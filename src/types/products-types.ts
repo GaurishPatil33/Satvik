@@ -12,6 +12,7 @@ export interface IProduct {
     review_ids?: string[]; // To track associated review IDs at the application level
     created_at: string;
     updated_at: string;
+    badge?:string
 }
 
 export interface IProductCategory {

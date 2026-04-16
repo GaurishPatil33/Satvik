@@ -19,7 +19,7 @@ const categories = [
 
 export default function CategoryRow() {
   return (
-    <section className=" pt-2 pb-3 bg-cream border-b border-cream-dark/60 md:sticky top-[90px]  z-40 backdrop-blur-sm">
+    <section className=" pt-2 pb-3 bg-cream border-b border-cream-dark/60 md:sticky top-[90px]  z-30 backdrop-blur-sm">
       <div className="flex gap-4 overflow-x-auto pb-2  pt-1 justify-center flex-wrap ">
         {categories.map((cat, i) => (
           <Link

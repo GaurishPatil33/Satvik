@@ -1,5 +1,5 @@
 import { ICategory } from "../types/category-types";
-import { api } from "./api";
+import { api, apiFetch } from "./api";
 
 
 //  Get all CAtegories
@@ -30,8 +30,13 @@ export const getCategoryBySlug = async (slug: string): Promise<ICategory> => {
 export const createCategory = async (
   data: Omit<ICategory, "id" | "created_at" | "updated_at">
 ): Promise<ICategory> => {
-  const res = await api.post("/categories", data);
-  return res.data;
+//   const res = await api.post("/categories", data);
+//   return res.data;
+  return apiFetch("/categories", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
 };
 
 //update

@@ -7,7 +7,8 @@ import {
     LayoutDashboard, Package, ShoppingCart, Users,
     BarChart2, Settings, ChevronRight, Tag, Star,
     Bell, LogOut, Leaf,
-    ChevronLeft
+    ChevronLeft,
+    Folder
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
@@ -20,6 +21,7 @@ const navGroups = [
             { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
             { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
             { label: "Products", href: "/admin/products", icon: Package },
+            { label: "Categories", href: "/admin/categories", icon: Folder},
             { label: "Customers", href: "/admin/customers", icon: Users },
         ],
     },
@@ -86,6 +88,7 @@ export function AdminSidebar() {
                     />
                 </button>
             </div>
+
 
             {/* Nav */}
             <nav className="flex-1 px-2 py-4 overflow-y-auto space-y-6 overflow-x-hidden">

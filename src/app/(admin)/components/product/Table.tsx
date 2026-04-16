@@ -2,16 +2,55 @@ import Image from "next/image";
 import { Edit2, Trash2, Star } from "lucide-react";
 import { StockBadge } from "./StockBadge";
 import { cn } from "@/src/lib/utils";
-import { Product } from "@/src/lib/types";
+import { IProduct } from "@/src/types/products-types";
+import { useEffect, useState } from "react";
+import { ICategory } from "@/src/types/category-types";
+import { getCategories } from "@/src/services/category.service";
 
 
 interface Props {
-    products: Product[];
-    onEdit: (product: Product) => void;
-    onDelete?: (product: Product) => void;
+    products: IProduct[] | undefined;
+    onEdit: (product: IProduct) => void;
+    onDelete?: (product: IProduct) => void;
 }
 
 export default function ProductsTable({ products, onEdit, onDelete }: Props) {
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    const categoryMap = new Map(
+        categories.map(cat => [cat.id, cat.name])
+    );
+
+    useEffect(() => {
+        const fetch = async () => {
+            const data = await getCategories();
+            setCategories(data);
+        };
+        fetch();
+    }, []);
+    const getProductCategoryNames = (ids?: string[]) => {
+        if (!ids || !ids.length) return [];
+
+        return ids
+            .map(id => categoryMap.get(id))
+            .filter(Boolean);
+    };
+
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalItems = products?.length ?? 0;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    const paginatedProducts = products?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [products]);
+
     return (
         <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -29,42 +68,45 @@ export default function ProductsTable({ products, onEdit, onDelete }: Props) {
                 </thead>
 
                 <tbody className="divide-y divide-gray-50">
-                    {products.map((product) => (
+                    {paginatedProducts?.map((product) => (
                         <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
                             {/* Product */}
                             <td className="px-5 py-4">
                                 <div className="flex items-center gap-3">
                                     <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                                         <Image
-                                            src={product.media?.[0]?.url || "/placeholder.png"}
+                                            src={product.images?.[0] || "/placeholder.png"}
                                             alt={product.title}
                                             fill
                                             className="object-cover"
                                             sizes="48px"
                                         />
                                     </div>
-                                    <div>
-                                        <p className="font-semibold text-gray-900 text-xs font-body">
+                                    <div className=" overflow-hidden">
+                                        <p className="font-semibold text-gray-900 text-xs font-body truncate line-clamp-2 ">
                                             {product.title}
                                         </p>
-                                        <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2">
+                                        {/* <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2">
                                             {product.description}
-                                        </p>
+                                        </p> */}
                                     </div>
                                 </div>
                             </td>
 
                             {/* Category */}
-                            <td className="px-5 py-4">
-                                <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg capitalize">
-                                    {product.category}
-                                </span>
+                            <td className="px-5 py-4 flex flex-wrap">
+                                {getProductCategoryNames(product.category_ids).map(n => (
+                                    <span key={n} className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg capitalize">
+                                        {n}
+                                    </span>
+                                ))}
                             </td>
 
                             {/* Price */}
                             <td className="px-5 py-4">
                                 <p className="font-bold text-gray-900 text-sm">
-                                    ₹{product.variants[0].price}
+                                    {/* ₹{product.variants[0].price} */}
+                                    ₹{product.price}
                                 </p>
                             </td>
 
@@ -73,17 +115,17 @@ export default function ProductsTable({ products, onEdit, onDelete }: Props) {
                                 <div className="flex items-center gap-1">
                                     <Star size={11} className="fill-amber-400 text-amber-400" />
                                     <span className="text-xs font-semibold text-gray-800">
-                                        {product.rating ?? 0}
+                                        {product.average_rating ?? 0}
                                     </span>
                                     <span className="text-[10px] text-gray-400">
-                                        ({product.reviews ?? 0})
+                                        ({product.review_ids ?? 0})
                                     </span>
                                 </div>
                             </td>
 
                             {/* Stock */}
                             <td className="px-5 py-4">
-                                <StockBadge qty={Number(product.stock) ?? 0} />
+                                <StockBadge qty={Number(product.stock_quantity) ?? 0} />
                             </td>
 
                             {/* Badge */}
@@ -132,7 +174,7 @@ export default function ProductsTable({ products, onEdit, onDelete }: Props) {
                     ))}
 
                     {/* no products */}
-                    {products.length === 0 && (
+                    {products?.length === 0 && (
                         <tr>
                             <td colSpan={7} className="text-center py-10 text-gray-400">
                                 No products found
@@ -141,6 +183,29 @@ export default function ProductsTable({ products, onEdit, onDelete }: Props) {
                     )}
                 </tbody>
             </table>
+            <div className="flex items-center justify-between mt-4 px-2">
+                <p className="text-xs text-gray-500">
+                    Page {currentPage} of {totalPages || 1}
+                </p>
+
+                <div className="flex gap-2">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((p) => p - 1)}
+                        className="px-3 py-1 text-xs rounded-md border disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((p) => p + 1)}
+                        className="px-3 py-1 text-xs rounded-md border disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

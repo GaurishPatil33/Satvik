@@ -19,7 +19,7 @@ const RATING_BREAKDOWN = [
   { star: 3, pct: 2 }, { star: 2, pct: 1 }, { star: 1, pct: 1 },
 ];
 const REVIEWS: Review[] = [
-  { name: "Priya Menon", location: "Bangalore", avatar: "🧕", rating: 5, title: "Finally, oil that actually smells like groundnut!", text: "Switched to Satvik after my nutritionist's advice. The difference is immediate — the aroma when you open the bottle is incredible. My food tastes richer and more authentic.", product: "1000ml", date: "3 weeks ago", helpful: 32, verified: true },
+  { name: "Priya Menon", location: "Bangalore", avatar: "https:", rating: 5, title: "Finally, oil that actually smells like groundnut!", text: "Switched to Satvik after my nutritionist's advice. The difference is immediate — the aroma when you open the bottle is incredible. My food tastes richer and more authentic.", product: "1000ml", date: "3 weeks ago", helpful: 32, verified: true },
   { name: "Dr. Vikram Nair", location: "Hyderabad", avatar: "👨‍⚕️", rating: 5, title: "Recommending this to all my patients", text: "As a cardiologist, I'm particular about cooking oils. Satvik's cold-pressed groundnut oil has the right fatty acid profile — high oleic acid, natural Vitamin E, zero trans fats. Consistent quality across batches.", product: "5L", date: "1 month ago", helpful: 78, verified: true },
   { name: "Rekha Sharma", location: "Jaipur", avatar: "👩‍🍳", rating: 4, title: "Great oil, slight cloudiness at first", text: "Excellent for cooking — the flavour is authentic and my family loves it. Was initially concerned about cloudiness but it's natural sedimentation from unrefined pressing. Shakes clear easily.", product: "2L", date: "2 months ago", helpful: 19, verified: true },
 ];

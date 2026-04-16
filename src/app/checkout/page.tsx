@@ -6,6 +6,12 @@ import {
   ChevronRight, CreditCard, Smartphone, Landmark, Wallet, Banknote,
   Package, MapPin, User, Lock, Zap, Calendar
 } from "lucide-react";
+import { useCartStore } from "@/src/store/cart.store";
+import Image from "next/image";
+import { SummaryPanel } from "@/src/components/checkout/SummaryPanel";
+import OrderSummary from "@/src/components/checkout/OrderSummary";
+import SuccessMessage from "../../components/checkout/Success";
+import CheckoutProgress from "@/src/components/checkout/Progress";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Step = 1 | 2 | 3 | 4;
@@ -49,40 +55,10 @@ const BANKS = [
 
 const STEPS = ["Contact", "Delivery", "Payment", "Confirmed"];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function StepCircle({ n, current }: { n: number; current: Step }) {
-  const done = n < current;
-  const active = n === current;
-  return (
-    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300 flex-shrink-0
-      ${done ? "bg-forest/60 border-forest/40 text-white" : ""}
-      ${active ? "bg-forest/80 border-forest text-white shadow-lg shadow-forest/25 ring-4 ring-forest/45" : ""}
-      ${!done && !active ? "bg-white border-cream text-gray-300" : ""}`}
-    >
-      {done ? <Check className="w-3.5 h-3.5" /> : n}
-    </div>
-  );
-}
-
-function SummaryPanel({ label, value, onClick }: { label: string; value: string; onClick: () => void }) {
-  return (
-    <div className="bg-white border border-cream-200 rounded-2xl mb-3 overflow-hidden">
-      <div className="px-5 py-3.5 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-0.5">
-            <CheckCircle className="w-4 h-4 text-forest-500" />
-            <span className="font-playfair font-bold text-sm text-gray-800">{label}</span>
-          </div>
-          <p className="text-xs text-gray-400 font-dm ml-6">{value}</p>
-        </div>
-        <button onClick={onClick} className="text-xs font-dm font-bold text-forest-500 hover:text-forest transition-colors">Edit</button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Main ────────────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
+
+  const { items, removeFromCart, getSubtotal, getGrandTotal, getDiscountTotal } = useCartStore()
+
   const [step, setStep] = useState<Step>(1);
 
   // Contact
@@ -161,7 +137,7 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // ── Card format ──
+  // Card format 
   function fmtCard(v: string) {
     return v.replace(/\D/g, "").substring(0, 16).replace(/(.{4})/g, "$1  ").trim();
   }
@@ -170,96 +146,20 @@ export default function CheckoutPage() {
     return d.length >= 2 ? d.substring(0, 2) + " / " + d.substring(2, 4) : d;
   }
 
-  // ── Confirmed screen ──
+  // confirmation
   if (placed) {
-    return (
-      <div className="min-h-screen bg-cream-50 flex flex-col">
-        {/* Header */}
-        <header className="bg-white border-b border-cream-200 px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-forest-500 rounded-full flex items-center justify-center text-sm">🌿</div>
-            <span className="font-playfair font-bold text-lg text-forest-700">Satvik</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs font-dm font-bold text-forest-500 bg-forest-50 border border-forest-200 px-3 py-1.5 rounded-full">
-            <Lock className="w-3 h-3" /> Secure Checkout
-          </div>
-        </header>
-
-        <div className="flex-1 flex items-center justify-center px-5 py-12">
-          <div className="bg-white border border-cream-200 rounded-3xl p-10 text-center max-w-lg w-full shadow-2xl shadow-black/5">
-            {/* Success icon */}
-            <div className="w-20 h-20 bg-gradient-to-br from-forest-600 to-forest-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-xl shadow-forest-500/25"
-              style={{ animation: "pop-in .5s cubic-bezier(.34,1.56,.64,1) both" }}>
-              ✓
-            </div>
-
-            <p className="text-xs font-dm font-bold text-forest-500 uppercase tracking-widest mb-2">Order #STK-2024-00847</p>
-            <h1 className="font-playfair text-3xl font-bold text-gray-900 mb-3">Order Placed!</h1>
-            <p className="text-sm font-dm text-gray-500 leading-relaxed mb-7">
-              Thank you, <strong className="text-gray-700">{firstName || "there"}</strong>! Your order is confirmed.<br />
-              Confirmation sent to <strong className="text-gray-700">{email || "your email"}</strong>
-            </p>
-
-            {/* Items recap */}
-            <div className="bg-cream-100 border border-cream-200 rounded-2xl p-4 mb-5 text-left space-y-3">
-              {CART_ITEMS.map((item) => (
-                <div key={item.name} className="flex items-center gap-3">
-                  <div className={`w-11 h-11 ${item.bg} rounded-xl border border-cream-200 flex items-center justify-center text-xl flex-shrink-0`}>{item.emoji}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-dm font-semibold text-gray-800 truncate">{item.name}</p>
-                    <p className="text-[11px] text-gray-400">{item.sub} · Qty: {item.qty}</p>
-                  </div>
-                  <span className="font-playfair font-bold text-sm text-forest-600 flex-shrink-0">₹{item.price}</span>
-                </div>
-              ))}
-              <div className="flex justify-between pt-3 border-t border-cream-200">
-                <span className="font-playfair font-bold text-sm text-gray-900">Total Paid</span>
-                <span className="font-playfair font-bold text-lg text-forest-600">₹{total}</span>
-              </div>
-            </div>
-
-            {/* ETA */}
-            <div className="flex items-center gap-3 bg-forest-50 border border-forest-200 rounded-xl px-4 py-3 mb-6 text-left">
-              <Truck className="w-5 h-5 text-forest-500 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-500 font-dm">Estimated Delivery</p>
-                <p className="text-sm font-dm font-bold text-forest-600">
-                  {deliveryType === "express" ? "Tomorrow, 19 Mar · Before 8 PM" : "Thursday, 20 March · Standard Free Delivery"}
-                </p>
-              </div>
-            </div>
-
-            {/* Order tracker */}
-            <div className="flex items-center justify-between mb-8 px-1">
-              {["Confirmed", "Packed", "Shipped", "Delivered"].map((s, i) => (
-                <div key={s} className="flex flex-col items-center gap-1.5 flex-1">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-forest-500 text-white shadow-md shadow-forest-500/25" : "bg-cream-200 text-gray-400"}`}>
-                    {i === 0 ? "✓" : ["📦", "🚚", "🎉"][i - 1]}
-                  </div>
-                  <span className={`text-[10px] font-dm font-semibold ${i === 0 ? "text-forest-500" : "text-gray-300"}`}>{s}</span>
-                  {i < 3 && <div className="absolute h-0.5 bg-cream-200" />}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              <button className="flex-1 h-11 bg-forest-500 hover:bg-forest-600 text-white font-dm font-bold text-sm rounded-xl transition-colors">
-                📦 Track Order
-              </button>
-              <button
-                onClick={() => { setPlaced(false); setStep(1); }}
-                className="flex-1 h-11 bg-white border-2 border-forest-400 text-forest-600 hover:bg-forest-50 font-dm font-bold text-sm rounded-xl transition-colors"
-              >
-                ← Continue Shopping
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    <SuccessMessage firstName={firstName}
+      email={email}
+      items={items}
+      total={getGrandTotal()}
+      deliveryType={deliveryType}
+      onContinue={() => {
+        setPlaced(false);
+        setStep(1);
+      }} />
   }
 
-  // ── Main checkout layout ──
+
   const contactSummary = `${firstName} ${lastName} · ${email} · ${phone}`.trim().replace(/^·|·$/g, '').trim();
   const addrSummary = selectedAddr === 0
     ? "42, Indiranagar 2nd Stage · Bangalore 560 038"
@@ -285,29 +185,11 @@ export default function CheckoutPage() {
       </header>
 
       {/* Progress */}
-      <div className="bg-white border-b border-cream-200">
-        <div className="max-w-4xl mx-auto px-5 flex items-center">
-          {STEPS.map((label, i) => {
-            const n = i + 1;
-            return (
-              <div key={label} className="flex items-center flex-1 last:flex-none">
-                <button
-                  onClick={() => n < step ? advanceStep(n as Step) : undefined}
-                  className="flex flex-col items-center py-4 gap-1.5 min-w-[70px]"
-                >
-                  <StepCircle n={n} current={step} />
-                  <span className={`text-[11px] font-dm font-semibold transition-colors ${n < step ? "text-forest" : n === step ? "text-fores" : "text-gray-300"}`}>
-                    {label}
-                  </span>
-                </button>
-                {i < STEPS.length - 1 && (
-                  <div className={`flex-1 h-0.5 mx-1 mb-3 transition-colors duration-300 ${n < step ? "bg-forest" : "bg-cream"}`} />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <CheckoutProgress
+        steps={STEPS}
+        currentStep={step}
+        onStepClick={(s) => advanceStep(s)}
+      />
 
       {/* Body */}
       <div className="max-w-4xl mx-auto px-5 py-7 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
@@ -333,23 +215,29 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
-                  {([["First Name", firstName, setFirstName, "firstName", "Priya"],
-                  ["Last Name", lastName, setLastName, "lastName", "Menon"]] as const).map(([label, val, setter, key, ph]) => (
-                    <div key={key} className="flex flex-col gap-1.5">
-                      <label className="text-[11px] font-dm font-bold text-gray-500 uppercase tracking-wider">{label} *</label>
-                      <input
-                        value={val} onChange={e => setter(e.target.value)}
-                        placeholder={ph}
-                        className={`border rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none transition-all ${errors[key] ? "border-red-400 bg-red-50 focus:ring-red-200" : "border-cream-300 focus:border-forest-400 focus:ring-forest-500/10"} focus:ring-4`}
-                      />
-                      {errors[key] && <p className="text-[11px] text-red-500">Required</p>}
-                    </div>
-                  ))}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-dm font-bold text-gray-500 uppercase tracking-wider">First Name *</label>
+                    <input
+                      value={firstName} onChange={e => setFirstName(e.target.value)}
+                      placeholder={"abc"}
+                      className={`border rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none transition-all ${errors.firstName ? "border-red-400 bg-red-50 focus:ring-red-200" : "border-cream-300 focus:border-forest-400 focus:ring-forest-500/10"} focus:ring-4`}
+                    />
+                    {errors.firstName && <p className="text-[11px] text-red-500">Required</p>}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-dm font-bold text-gray-500 uppercase tracking-wider">Last Name *</label>
+                    <input
+                      value={lastName} onChange={e => setLastName(e.target.value)}
+                      placeholder={"abc"}
+                      className={`border rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none transition-all ${errors.firstName ? "border-red-400 bg-red-50 focus:ring-red-200" : "border-cream-300 focus:border-forest-400 focus:ring-forest-500/10"} focus:ring-4`}
+                    />
+                    {errors.lastName && <p className="text-[11px] text-red-500">Required</p>}
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-1.5 mb-3">
                   <label className="text-[11px] font-dm font-bold text-gray-500 uppercase tracking-wider">Email Address *</label>
-                  <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="priya@email.com"
+                  <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="abc@email.com"
                     className={`border rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none transition-all ${errors.email ? "border-red-400 bg-red-50 focus:ring-red-200" : "border-cream-300 focus:border-forest-400 focus:ring-forest-500/10"} focus:ring-4`}
                   />
                   {errors.email ? <p className="text-[11px] text-red-500">Valid email required</p> : <p className="text-[11px] text-gray-400">Order confirmation sent here</p>}
@@ -361,7 +249,7 @@ export default function CheckoutPage() {
                     <select className="border border-cream-300 rounded-xl px-3 py-2.5 font-dm text-sm outline-none bg-white w-20 flex-shrink-0">
                       <option>+91</option><option>+1</option><option>+44</option>
                     </select>
-                    <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" placeholder="98765 43210"
+                    <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" placeholder="12345 67890"
                       className={`flex-1 border rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none transition-all ${errors.phone ? "border-red-400 bg-red-50" : "border-cream-300 focus:border-forest-400 focus:ring-forest-500/10"} focus:ring-4`}
                     />
                   </div>
@@ -396,7 +284,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="p-5">
                   {/* Saved addresses */}
-                  <div className="space-y-2.5 mb-3">
+                  {/* <div className="space-y-2.5 mb-3">
                     {[
                       { name: "Priya Menon", addr: "42, Indiranagar 2nd Stage, HAL 2nd Stage\nBangalore – 560 038, Karnataka", badge: "Home", badgeColor: "bg-amber-100 text-amber-700" },
                       { name: "Priya Menon (Office)", addr: "Level 3, Diamond District, Old Airport Rd\nBangalore – 560 008, Karnataka", badge: "Office", badgeColor: "bg-forest-100 text-forest-600" },
@@ -414,7 +302,7 @@ export default function CheckoutPage() {
                         <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full ${a.badgeColor}`}>{a.badge}</span>
                       </div>
                     ))}
-                  </div>
+                  </div> */}
 
                   <button onClick={() => setShowNewAddr(!showNewAddr)}
                     className="w-full border-2 border-dashed border-cream-300 hover:border-forest-400 hover:bg-forest-50 rounded-xl py-3 px-4 flex items-center gap-2 text-sm font-dm font-semibold text-forest-500 transition-all mb-5">
@@ -425,14 +313,14 @@ export default function CheckoutPage() {
                     <div className="border-t border-cream-200 pt-5 mb-5 space-y-3">
                       <p className="text-[11px] font-dm font-bold text-gray-400 uppercase tracking-widest">New Address</p>
                       <div className="grid grid-cols-2 gap-3">
-                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Full Name *</label><input placeholder="Priya Menon" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
-                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Phone *</label><input placeholder="98765 43210" type="tel" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
+                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Full Name *</label><input placeholder="Enter your name" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
+                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Phone *</label><input placeholder="12345 67890" type="tel" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
                       </div>
                       <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Address Line 1 *</label><input placeholder="House/Flat No., Building, Street" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
                       <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Address Line 2</label><input placeholder="Area, Locality, Landmark" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
                       <div className="grid grid-cols-2 gap-3">
-                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">City *</label><input placeholder="Bangalore" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
-                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">PIN Code *</label><input placeholder="560038" maxLength={6} className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
+                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">City *</label><input placeholder="Enter city" className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
+                        <div><label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">PIN Code *</label><input placeholder="123456" maxLength={6} className="w-full border border-cream-300 rounded-xl px-3.5 py-2.5 font-dm text-sm outline-none focus:border-forest-400 transition-colors" /></div>
                       </div>
                     </div>
                   )}
@@ -636,101 +524,12 @@ export default function CheckoutPage() {
         </div>
 
         {/* ── RIGHT: Order Summary ── */}
-        <div className="lg:sticky lg:top-24">
-          <div className="bg-white border border-cream-200 rounded-2xl overflow-hidden shadow-sm">
-            {/* Header */}
-            <div className="bg-gradient-to-br from-forest-700 to-forest-500 px-5 py-4 relative overflow-hidden">
-              <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 2px 2px,white 1px,transparent 0)", backgroundSize: "18px 18px" }} />
-              <div className="absolute top-0 right-0 w-20 h-20 bg-amber-400/15 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl" />
-              <p className="font-playfair font-bold text-base text-white relative z-10">Order Summary</p>
-              <p className="text-xs text-white/60 mt-0.5 relative z-10">3 items</p>
-            </div>
-
-            <div className="p-5">
-              {/* Items */}
-              <div className="space-y-3 mb-4">
-                {CART_ITEMS.map((item) => (
-                  <div key={item.name} className="flex items-center gap-3">
-                    <div className={`w-12 h-12 ${item.bg} rounded-xl border border-cream-200 flex items-center justify-center text-xl flex-shrink-0 relative`}>
-                      {item.emoji}
-                      <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-forest-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{item.qty}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-dm font-semibold text-xs text-gray-800 truncate">{item.name}</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">{item.sub}</p>
-                    </div>
-                    <span className="font-playfair font-bold text-sm text-forest-600 flex-shrink-0">₹{item.price}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Price lines */}
-              <div className="border-t border-cream-200 pt-4 space-y-2.5">
-                <div className="flex justify-between text-sm font-dm">
-                  <span className="text-gray-500">Subtotal (4 items)</span>
-                  <span className="font-semibold text-gray-700">₹{SUBTOTAL}</span>
-                </div>
-                {couponApplied && (
-                  <div className="flex justify-between text-sm font-dm">
-                    <span className="text-gray-500">Coupon (SATVIK10)</span>
-                    <span className="font-semibold text-green-600">−₹{discount}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm font-dm">
-                  <span className="text-gray-500">Delivery</span>
-                  <span className={`font-semibold ${deliveryFee === 0 ? "text-green-600" : "text-gray-700"}`}>
-                    {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
-                  </span>
-                </div>
-                {codFee > 0 && (
-                  <div className="flex justify-between text-sm font-dm">
-                    <span className="text-gray-500">COD Handling</span>
-                    <span className="font-semibold text-gray-700">₹{codFee}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-between items-baseline pt-3.5 mt-2 border-t-2 border-cream-200">
-                <span className="font-playfair font-bold text-base text-gray-900">Total</span>
-                <span className="font-playfair font-bold text-2xl text-forest-600">₹{total}</span>
-              </div>
-
-              {couponApplied && discount > 0 && (
-                <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 mt-3 text-xs font-dm font-semibold text-amber-800">
-                  🎉 You&apos;re saving <strong>₹{discount}</strong> on this order!
-                </div>
-              )}
-
-              {/* Place order - only on step 3 */}
-              {step === 3 && (
-                <>
-                  <button
-                    onClick={placeOrder}
-                    disabled={placing}
-                    className="w-full h-13 mt-4 bg-gradient-to-br from-forest-600 to-forest-500 hover:from-forest-700 hover:to-forest-600 disabled:opacity-80 text-white font-dm font-bold text-base rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest-500/30 flex items-center justify-center gap-2.5 py-3.5 relative overflow-hidden"
-                    style={{ height: "52px" }}
-                  >
-                    {placing ? (
-                      <><span className="animate-spin text-lg">⏳</span> Processing…</>
-                    ) : (
-                      <><Lock className="w-4 h-4" /> Place Order · ₹{total}</>
-                    )}
-                  </button>
-                  <p className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 mt-2.5 font-dm">
-                    <ShieldCheck className="w-3.5 h-3.5" /> 256-bit SSL encrypted · PCI DSS compliant
-                  </p>
-                </>
-              )}
-            </div>
-
-            {/* Trust footer */}
-            <div className="border-t border-cream-100 px-5 py-3 flex flex-wrap gap-3">
-              {[{ icon: <ShieldCheck className="w-3.5 h-3.5" />, t: "Secure" }, { icon: <RotateCcw className="w-3.5 h-3.5" />, t: "7-day Return" }, { icon: <Truck className="w-3.5 h-3.5" />, t: "Free Delivery" }].map(({ icon, t }) => (
-                <div key={t} className="flex items-center gap-1.5 text-[11px] font-dm font-semibold text-gray-400">{icon}{t}</div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <OrderSummary step={step}
+          placing={placing}
+          onPlaceOrder={placeOrder}
+          couponApplied={couponApplied}
+          deliveryFee={deliveryFee}
+          codFee={codFee} />
 
       </div>
     </div>

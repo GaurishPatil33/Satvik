@@ -26,18 +26,6 @@ interface SizeOption {
   price: number;
 }
 
-interface Review {
-  name: string;
-  location: string;
-  avatar: string;
-  rating: number;
-  title: string;
-  text: string;
-  product: string;
-  date: string;
-  helpful: number;
-  verified: boolean;
-}
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 const SIZES: SizeOption[] = [

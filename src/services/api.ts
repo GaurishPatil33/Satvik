@@ -19,7 +19,7 @@ export const apiFetch = async (
       ...options.headers,
     },
   });
-
+  // console.log("Interceptor token:", token);
   if (!res.ok) {
     const error = await res.json();
     console.log("API ERROR:", error);
@@ -42,7 +42,7 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
-
+  // console.log("Interceptor token:", token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

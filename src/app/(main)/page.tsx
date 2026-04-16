@@ -13,10 +13,21 @@ import CategoryRow from '../../components/landing_page/CategoryRow'
 import { useAdminUsers } from '@/src/hooks/useAdminUsers'
 import { useUser } from '@/src/hooks/useUser'
 import MobilUser from '@/src/components/login&register/MobilUser'
+import { getAllUsers } from '@/src/services/user.services'
+import { useEffect, useState } from 'react'
+import { IUser } from '@/src/types/user-types'
 
 export default function Home() {
-  const { users } = useAdminUsers()
-  const { user } = useUser()
+  const [users, setusers] = useState<IUser[]|null>()
+  // useEffect(() => {
+  //   const fetch = async () => await getAllUsers()
+  //   if (fetch) {
+  //     // setusers(fetch)
+  //   }
+  //   fetch()
+  // }, [])
+
+
   return (
     <main className="min-h-screen bg-cream">
       <HeroSection />
@@ -32,13 +43,8 @@ export default function Home() {
       <ExploreOils />
       <ShopByConcern />
 
-      <div className="">{users.map(u => (
-        <div className="">{u.email}</div>
-      ))}</div>
 
-      
-      <div className="">{user?.email}</div>
-      
+
       <Reviews />
 
     </main>

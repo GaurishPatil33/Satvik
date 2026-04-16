@@ -41,14 +41,7 @@ export default function ListingPage() {
     setSearchDraft("");
   }, []);
 
-  // Debounce search
-  const handleSearch = (val: string) => {
-    setSearchDraft(val);
-    if (searchTimer.current) clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => {
-      updateFilters({ search: val, page: 1 });
-    }, 280);
-  };
+  
 
   const filtered = useMemo(() => filterAndSort(products, filters), [filters]);
   const total = filtered.length;
@@ -87,31 +80,10 @@ export default function ListingPage() {
         </div>
       </div>
 
-      {/* Search bar below hero */}
-      {/* <div className="bg-white border-b border-cream-200 px-5 py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center bg-cream-50 border border-cream-300 rounded-xl px-4 py-2.5 gap-2.5 max-w-xl focus-within:border-forest-400 focus-within:shadow-md focus-within:shadow-forest-500/10 transition-all">
-            <Search className="w-4 h-4 text-earth-300 flex-shrink-0" />
-            <input
-              type="text"
-              value={searchDraft}
-              onChange={e => handleSearch(e.target.value)}
-              placeholder='Search products… e.g. "coconut oil", "jaggery"'
-              className="flex-1 bg-transparent text-sm font-dm text-gray-700 placeholder-earth-300 outline-none"
-            />
-            {searchDraft && (
-              <button onClick={() => { setSearchDraft(""); updateFilters({ search: "", page: 1 }); }}>
-                <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div> */}
-
       {/* Main layout */}
       <div className="max-w-7xl mx-auto px-5 py-6 flex gap-6 items-start" >
 
-        {/* Sidebar — desktop */}
+        {/* Sidebar  desktop */}
         <div className="w-64 flex-shrink-0 hidden lg:block sticky top-24">
           <FilterSidebar filters={filters} onChange={updateFilters} onClear={clearAll} />
         </div>

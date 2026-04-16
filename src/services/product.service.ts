@@ -1,11 +1,16 @@
 import { IProduct } from "../types/products-types";
-import { api,apiFetch } from "./api";
+import { api, apiFetch } from "./api";
 
 
 //get all
 export const getProducts = async (): Promise<IProduct[]> => {
-  const res = await api.get("/products");
-  return res.data;
+  // const res = await api.get("/products");
+  // return res.data;
+
+  return apiFetch("/products", {
+    method: "GET",
+    // body: JSON.stringify(),
+  });
 };
 
 
@@ -18,8 +23,12 @@ export const getProductById = async (id: string): Promise<IProduct> => {
 
 // Create
 export const createProduct = async (data: Partial<IProduct>): Promise<IProduct> => {
-  const res = await api.post("/products", data);
-  return res.data;
+  // const res = await api.post("/products", data);
+  // return res.data;
+  return apiFetch("/products", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 };
 
 
@@ -36,4 +45,8 @@ export const updateProduct = async (
 // Delete
 export const deleteProduct = async (id: string): Promise<void> => {
   await api.delete(`/products/${id}`);
+  //   return apiFetch(`/products/${id}`, {
+  //   method: "DELETE",
+  //   // body: JSON.stringify(data),
+  // });
 };

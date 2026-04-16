@@ -1,117 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Search, Edit2, Trash2, Star, AlertTriangle, X, Pen } from "lucide-react";
-import { products } from "@/src/lib/data";
 import { Product } from "@/src/lib/types";
 import { cn, formatPrice } from "@/src/lib/utils";
 import { SectionCard } from "../../components/Ui";
 import Image from "next/image";
 import ProductsTable from "../../components/product/Table";
-import ProductModal, { ProductForm } from "../../components/product/ProductModal";
 import { IProduct } from "@/src/types/products-types";
+import { deleteProduct, getProducts } from "@/src/services/product.service";
+import { ProductForm } from "../../components/product/ProductModal";
 
-export const mockProducts: IProduct[] = [
-  {
-    id: "prod_001",
-    title: "Wireless Bluetooth Headphones",
-    brand: "SoundMax",
-    price: 2999,
-    discount_percentage: 10,
-    category_ids: ["electronics", "audio"],
-    description: "High-quality wireless headphones with noise cancellation.",
-    stock_quantity: 50,
-    average_rating: 4.5,
-    images: [
-      "https://example.com/images/headphones1.jpg",
-      "https://example.com/images/headphones2.jpg"
-    ],
-    review_ids: ["rev_001", "rev_002"],
-    created_at: "2026-04-01T10:00:00Z",
-    updated_at: "2026-04-05T12:00:00Z"
-  },
-  {
-    id: "prod_002",
-    title: "Men's Casual T-Shirt",
-    brand: "UrbanWear",
-    price: 799,
-    discount_percentage: 20,
-    category_ids: ["fashion", "men"],
-    description: "Comfortable cotton t-shirt for everyday wear.",
-    stock_quantity: 120,
-    average_rating: 4.2,
-    images: [
-      "https://example.com/images/tshirt1.jpg"
-    ],
-    review_ids: ["rev_003"],
-    created_at: "2026-03-28T09:30:00Z",
-    updated_at: "2026-04-02T11:15:00Z"
-  },
-  {
-    id: "prod_003",
-    title: "Smartphone 128GB",
-    brand: "TechNova",
-    price: 15999,
-    category_ids: ["electronics", "mobile"],
-    description: "Powerful smartphone with 128GB storage and great camera.",
-    stock_quantity: 30,
-    average_rating: 4.7,
-    images: [
-      "https://example.com/images/phone1.jpg",
-      "https://example.com/images/phone2.jpg"
-    ],
-    created_at: "2026-04-03T14:20:00Z",
-    updated_at: "2026-04-07T08:45:00Z"
-  },
-  {
-    id: "prod_004",
-    title: "Running Shoes",
-    brand: "FitStep",
-    price: 2499,
-    discount_percentage: 15,
-    category_ids: ["sports", "footwear"],
-    description: "Lightweight running shoes with excellent grip.",
-    stock_quantity: 75,
-    average_rating: 4.3,
-    images: [
-      "https://example.com/images/shoes1.jpg"
-    ],
-    review_ids: [],
-    created_at: "2026-03-25T16:10:00Z",
-    updated_at: "2026-04-01T10:05:00Z"
-  },
-  {
-    id: "prod_005",
-    title: "Office Laptop 16GB RAM",
-    brand: "CompEdge",
-    price: 54999,
-    category_ids: ["electronics", "computers"],
-    description: "High-performance laptop suitable for office and development work.",
-    stock_quantity: 20,
-    average_rating: 4.6,
-    images: [
-      "https://example.com/images/laptop1.jpg",
-      "https://example.com/images/laptop2.jpg"
-    ],
-    review_ids: ["rev_004", "rev_005"],
-    created_at: "2026-04-06T13:00:00Z",
-    updated_at: "2026-04-09T15:30:00Z"
-  }
-];
+
 
 export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [modalProduct, setModalProduct] = useState<Product | null | undefined>(undefined);
-  const [product, setProduct] = useState<IProduct|null|undefined>(undefined);
+  const [allProducts, setProducts] = useState<IProduct[] | null>();
+
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+  const [mode, setMode] = useState<"create" | "edit" | null>(null);
 
   const categories = ["all", "oil", "jaggery", "sugar", "salt"];
-  const filtered = products.filter((p) => {
+  const filtered = allProducts?.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
-    const matchCat = categoryFilter === "all" || p.category === categoryFilter;
+    const matchCat = categoryFilter === "all" || p.category_ids.includes(categoryFilter);
     return matchSearch && matchCat;
   });
-  const lowStockProduct = products.find(p => Number(p.stock) <= 15);
+  const lowStockProduct = allProducts?.find(p => Number(p.stock_quantity) <= 15);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const p = await getProducts()
+      setProducts(p)
+    }
+    fetch()
+  }, [])
+
+
+  const refreshProducts = async () => {
+    const data = await getProducts();
+    setProducts(data);
+  };
+
+  const handleSuccess = async () => {
+    await refreshProducts();
+    setMode(null);
+    setSelectedProduct(null);
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteProduct(id);
+    await refreshProducts();
+  };
+
+  const handleCreate = () => {
+    setSelectedProduct(null);
+    setMode("create");
+  };
+  const handleEdit = (product: IProduct) => {
+    setSelectedProduct(product);
+    setMode("edit");
+  };
+
+  const handleClose = () => {
+    setSelectedProduct(null);
+    setMode(null);
+  };
 
   return (
     <div className="space-y-5 max-w-[1400px]">
@@ -119,29 +74,25 @@ export default function ProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-sm text-gray-500 font-body mt-0.5">{products.length} products listed</p>
+          <p className="text-sm text-gray-500 font-body mt-0.5">{allProducts?.length} products listed</p>
         </div>
         <button
-          onClick={() => setModalProduct(null)}
-          // onClick={() => setProduct(null)}
+          // onClick={() => setModalProduct(null)}
+          onClick={handleCreate}
           className="flex items-center gap-2 bg-[#2C4A2E] text-white px-4 py-2.5 rounded-xl text-sm font-body font-medium hover:bg-[#3D6B40] transition-colors"
         >
           <Plus size={14} /> Add Product
         </button>
       </div>
 
-
-
-
-
       {/* Low stock alert */}
       {lowStockProduct && (
         <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
           <AlertTriangle size={16} className="text-red-500 shrink-0" />
           <p className="text-sm text-red-700 font-body">
-            <strong>Low stock alert:</strong> {lowStockProduct.title} has only {lowStockProduct.stock} units remaining.
+            <strong>Low stock alert:</strong> {lowStockProduct.title} has only {lowStockProduct.stock_quantity} units remaining.
           </p>
-          <button className="ml-auto text-xs text-red-600 underline font-body">Restock</button>
+          {/* <button className="ml-auto text-xs text-red-600 underline font-body">Restock</button> */}
         </div>
       )}
 
@@ -175,38 +126,19 @@ export default function ProductsPage() {
         </div>
       </div>
 
-
-      {
-        mockProducts.map(p => (
-          <div className=" flex gap-1 justify-between items-center" key={p.id}>
-            <div className="">{p.id}</div>
-            <div className="">{p.title}</div>
-            {/* <Image src={p.images[0]} height={100} width={100} alt={p.title} /> */}
-            {/* <img src={p.images[0]} alt={p.id} className="size-10" /> */}
-
-            <button onClick={() => setProduct(p)} className=" p-1 rounded-full px-2 bg-blue-500 text-white flex items-center justify-center gap-2"><Pen className="size-4" /> Edit</button>
-          </div>
-        ))
-      }
-
       {/* Products table */}
       <SectionCard >
         <ProductsTable
           products={filtered}
-          onEdit={(product) => setModalProduct(product)}
-          onDelete={(product) => console.log("Delete", product)}
+          onEdit={(product) => handleEdit(product)}
+          onDelete={(product) => handleDelete(product.id)}
         />
       </SectionCard>
 
-      {/* Modal */}
-      {modalProduct !== undefined && (
-        <ProductModal product={modalProduct} onClose={() => setModalProduct(undefined)} />
-        // <ProductForm onClose={() => setModalProduct(undefined)} initialData={product} id={product?.id} />
 
-      )}
-      {product && (
+      {mode && (
         // <ProductModal product={modalProduct} onClose={() => setModalProduct(undefined)} />
-        <ProductForm onClose={() => setProduct(undefined)} initialData={product} id={product?.id} />
+        <ProductForm onClose={handleClose} onSuccess={handleSuccess} initialData={selectedProduct ?? undefined} id={mode === "edit" ? selectedProduct?.id : undefined} />
 
       )}
     </div>

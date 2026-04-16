@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { Product } from '@/src/lib/types'
 import { useRouter } from 'next/navigation'
+import { useCartStore } from '@/src/store/cart.store'
 interface ProductCardProps {
   product: Product
 }
@@ -11,21 +12,37 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [wished, setWished] = useState(false)
   const [added, setAdded] = useState(false)
-  const [selectedVariant, setselectedVariant] = useState<Product["variants"][number]>(product.variants[0])
+  const [selectedVariant, setselectedVariant] = useState(product.variants[0] ?? null)
   const price = Number(selectedVariant?.price ?? 0);
   const variantDiscount = Number(selectedVariant?.discount ?? 0);
   const couponDiscount = Number(product.coupons?.[0]?.discount ?? 0);
-const router=useRouter()
+  const router = useRouter()
   const finalPrice =
     price - (price * variantDiscount) / 100;
 
   const finalCouponPrice = Math.round(finalPrice - (finalPrice * couponDiscount) / 100
   );
 
+  const { addToCart } = useCartStore()
+
   const handleAdd = () => {
-    setAdded(true)
-    setTimeout(() => setAdded(false), 1500)
-  }
+    if (!selectedVariant) return;
+
+    setAdded(true);
+
+    addToCart({
+      productId: product.id,
+      product,
+      quantity:1,
+      variant: {
+        size: selectedVariant.size,
+        price: finalCouponPrice,
+        discount: 0,
+      },
+    });
+
+    setTimeout(() => setAdded(false), 1500);
+  };
 
   return (
     <div className="product-card group bg-white rounded-2xl overflow-hidden border border-cream-dark/80 hover:border-forest/30 hover:shadow-xl hover:shadow-forest/10 relative">
@@ -49,7 +66,7 @@ const router=useRouter()
       </button>
 
       {/* Image */}
-      <div className="overflow-hidden bg-cream h-52 flex items-center justify-center" onClick={()=>router.push(`/product/${product.id}`)}>
+      <div className="overflow-hidden bg-cream h-52 flex items-center justify-center" onClick={() => router.push(`/product/${product.id}`)}>
         <Image
           width={100}
           height={200}

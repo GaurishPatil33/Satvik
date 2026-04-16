@@ -1,24 +1,24 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { Product } from "../lib/types";
 
 
 export interface CartVariant {
     size?: string | number;
-    price?: number;
-    discount?: number;
+    price?: number|string;
+    discount?: number|string;
 }
 
 export interface CartItem {
     productId: string | number;
-    title: string;
-    brand: string;
-    thumbnail: string;
-    price: number;
-    discountPercentage?: number;
+    product: Product;
     quantity: number;
-    variant?: CartVariant;
+    variant?: {
+        size?: string | number;
+        price?: number;
+        discount?: number;
+    };
 }
-
 
 interface CartState {
     items: CartItem[];
@@ -34,9 +34,19 @@ interface CartState {
     getGrandTotal: () => number;
 }
 
-
+const toNumber = (value: string | number | undefined): number => {
+    if (value == null) return 0;
+    return typeof value === "string" ? Number(value) : value;
+};
 const isSameVariant = (a?: CartVariant, b?: CartVariant) => {
-    return a?.size === b?.size;
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+
+    return (
+        a.size === b.size &&
+        a.price === b.price &&
+        a.discount === b.discount
+    );
 };
 
 const getDiscountedPrice = (price: number, discount?: number) => {
@@ -71,10 +81,11 @@ export const useCartStore = create<CartState>()(
                         };
                     }
 
-                    return { items: [...state.items, { ...newItem, quantity: 1 }] };
+                    return {
+                        items: [...state.items, { ...newItem, quantity: 1 }],
+                    };
                 }),
 
-            //remove
             removeFromCart: (productId, variant) =>
                 set((state) => ({
                     items: state.items.filter(
@@ -115,23 +126,22 @@ export const useCartStore = create<CartState>()(
 
             //calculate
             getSubtotal: () => {
-                return get().items.reduce(
-                    (total, item) => total + item.price * item.quantity,
-                    0
-                );
-            },
-
-            getDiscountTotal: () => {
                 return get().items.reduce((total, item) => {
-                    const discounted = getDiscountedPrice(
-                        item.price,
-                        item.discountPercentage
-                    );
-                    const discountPerItem = item.price - discounted;
-                    return total + discountPerItem * item.quantity;
+                    const price = toNumber(item.variant?.price ?? item.product?.price??0);
+                    return total + price * item.quantity;
                 }, 0);
             },
+            getDiscountTotal: () => {
+                return get().items.reduce((total, item) => {
+                    const basePrice = toNumber(item.variant?.price ?? item.product?.price);
 
+                    const discount = toNumber(item.variant?.discount ?? item.product?.discountPercentage ?? 0)
+
+                    const discounted = basePrice - (basePrice * discount) / 100;
+
+                    return total + (basePrice - discounted) * item.quantity;
+                }, 0);
+            },
             getGrandTotal: () => {
                 const subtotal = get().getSubtotal();
                 const discount = get().getDiscountTotal();

@@ -5,29 +5,20 @@ import { cn } from "@/src/lib/utils";
 import { IProduct } from "@/src/types/products-types";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/src/types/category-types";
-import { getCategories } from "@/src/services/category.service";
 
 
 interface Props {
     products: IProduct[] | undefined;
+    categories: ICategory[]
     onEdit: (product: IProduct) => void;
     onDelete?: (product: IProduct) => void;
     isloading?: boolean;
 }
 
-export default function ProductsTable({ products, onEdit, onDelete, isloading = false }: Props) {
-    const [categories, setCategories] = useState<ICategory[]>([]);
+export default function ProductsTable({ products, onEdit, onDelete, isloading = false,categories }: Props) {
     const categoryMap = new Map(
         categories.map(cat => [cat.id, cat.name])
     );
-
-    useEffect(() => {
-        const fetch = async () => {
-            const data = await getCategories();
-            setCategories(data);
-        };
-        fetch();
-    }, []);
 
 
     const getProductCategoryNames = (ids?: string[]) => {
@@ -89,7 +80,7 @@ export default function ProductsTable({ products, onEdit, onDelete, isloading = 
                                     <div className="flex items-center gap-3">
                                         <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                                             <Image
-                                                src={product.images?.[0] }
+                                                src={product.images?.[0]}
                                                 alt={product.title}
                                                 fill
                                                 className="object-cover"

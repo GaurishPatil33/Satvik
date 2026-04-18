@@ -126,7 +126,6 @@ export default function ProductPage() {
 
     setloading(true)
     const fetch = products.find(p => p.id.toString() === id)
-    console.log("product", fetch)
     if (fetch) {
       setProduct(fetch)
       setrelatedProducts(products)

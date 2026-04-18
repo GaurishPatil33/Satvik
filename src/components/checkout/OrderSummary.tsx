@@ -1,5 +1,5 @@
 import { useCartStore } from '@/src/store/cart.store'
-import { ShieldCheck, RotateCcw, Truck,Lock } from 'lucide-react';
+import { ShieldCheck, RotateCcw, Truck, Lock } from 'lucide-react';
 import Image from 'next/image'
 import React, { useState } from 'react'
 
@@ -22,7 +22,12 @@ const OrderSummary = ({
     codFee,
 }: Props) => {
     const { items, removeFromCart, getSubtotal, getGrandTotal, getDiscountTotal } = useCartStore()
-const finalPrice=getGrandTotal
+    const itemDiscount = getDiscountTotal()
+    const finalPrice =
+        getSubtotal() -
+        getDiscountTotal() +
+        deliveryFee +
+        codFee
 
     return (
         <div className="lg:sticky lg:top-24">
@@ -38,7 +43,7 @@ const finalPrice=getGrandTotal
                 <div className="p-5">
                     {/* Items */}
                     <div className="space-y-3 mb-4">
-                        {items?.map((item,i) => (
+                        {items?.map((item, i) => (
                             <div key={i} className="flex items-center gap-3">
                                 <div className={`w-12 h-12  rounded-xl border border-cream-200 flex items-center justify-center text-xl flex-shrink-0 relative`}>
                                     {/* {item.product?.media[0].url} */}
@@ -59,6 +64,10 @@ const finalPrice=getGrandTotal
                         <div className="flex justify-between text-sm font-dm">
                             <span className="text-gray-500">Subtotal ({items.length})</span>
                             <span className="font-semibold text-gray-700">₹{getSubtotal()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm font-dm">
+                            <span className="text-gray-500">Product Discount</span>
+                            <span className="font-semibold text-gray-700">₹{itemDiscount}</span>
                         </div>
                         {couponApplied && (
                             <div className="flex justify-between text-sm font-dm">
@@ -82,7 +91,7 @@ const finalPrice=getGrandTotal
 
                     <div className="flex justify-between items-baseline pt-3.5 mt-2 border-t-2 border-cream-200">
                         <span className="font-playfair font-bold text-base text-gray-900">Total</span>
-                        <span className="font-playfair font-bold text-2xl text-forest-600">₹{getGrandTotal()}</span>
+                        <span className="font-playfair font-bold text-2xl text-forest-600">₹{finalPrice}</span>
                     </div>
 
                     {/* {couponApplied && discount > 0 && (
@@ -101,9 +110,15 @@ const finalPrice=getGrandTotal
                                 style={{ height: "52px" }}
                             >
                                 {placing ? (
-                                    <><span className="animate-spin text-lg">⏳</span> Processing…</>
+                                    <span className="flex items-center gap-2">
+                                        <span className="animate-spin">⏳</span>
+                                        Processing…
+                                    </span>
                                 ) : (
-                                    <><Lock className="w-4 h-4" /> Place Order · ₹{getGrandTotal()}</>
+                                    <>
+                                        <Lock className="w-4 h-4" />
+                                        Place Order · ₹{finalPrice}
+                                    </>
                                 )}
                             </button>
                             <p className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 mt-2.5 font-dm">

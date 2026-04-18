@@ -40,5 +40,13 @@ export async function uploadImage(
 }
 
 export async function deleteImage(path: string) {
-  await supabase.storage.from("media").remove([path]);
+  const { error } = await supabase.storage.from("media").remove([path]);
+
+
+  if (error) {
+    console.error("Delete failed:", error.message);
+    throw error;
+  }
+
+  console.log("Deleted:", path);
 }

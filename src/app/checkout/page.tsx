@@ -12,6 +12,7 @@ import { SummaryPanel } from "@/src/components/checkout/SummaryPanel";
 import OrderSummary from "@/src/components/checkout/OrderSummary";
 import SuccessMessage from "../../components/checkout/Success";
 import CheckoutProgress from "@/src/components/checkout/Progress";
+import { useRouter } from "next/navigation";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 type Step = 1 | 2 | 3 | 4;
@@ -56,7 +57,7 @@ const BANKS = [
 const STEPS = ["Contact", "Delivery", "Payment", "Confirmed"];
 
 export default function CheckoutPage() {
-
+  const router = useRouter()
   const { items, removeFromCart, getSubtotal, getGrandTotal, getDiscountTotal } = useCartStore()
 
   const [step, setStep] = useState<Step>(1);
@@ -147,7 +148,7 @@ export default function CheckoutPage() {
   }
 
   // confirmation
-  if (placed) {
+  if (placed) return (
     <SuccessMessage firstName={firstName}
       email={email}
       items={items}
@@ -155,9 +156,11 @@ export default function CheckoutPage() {
       deliveryType={deliveryType}
       onContinue={() => {
         setPlaced(false);
-        setStep(1);
+        router.push('/')
+        // setStep(1);
       }} />
-  }
+  )
+
 
 
   const contactSummary = `${firstName} ${lastName} · ${email} · ${phone}`.trim().replace(/^·|·$/g, '').trim();
@@ -174,9 +177,9 @@ export default function CheckoutPage() {
           <img src="/logo.png" className=" h-16" alt="" />
         </div>
         <div className="flex items-center gap-4">
-          <button onClick={() => step > 1 ? advanceStep((step - 1) as Step) : null}
+          <button onClick={() => step > 1 ? advanceStep((step - 1) as Step) : router.push("/")}
             className="text-xs font-dm font-semibold text-earth-400 hover:text-forest-500 transition-colors">
-            ← {step === 1 ? "Back to cart" : "Back"}
+            ← {step === 1 ? "Back to Store" : "Back"}
           </button>
           <div className="flex items-center gap-1.5 text-xs font-dm font-bold text-forest-500 bg-forest-50 border border-forest-200 px-3 py-1.5 rounded-full">
             <Lock className="w-3 h-3" /> Secure Checkout

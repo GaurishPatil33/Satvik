@@ -12,6 +12,7 @@ interface SuccessMessageProps {
 }
 
 
+
 const SuccessMessage = ({
     firstName,
     email,
@@ -20,14 +21,52 @@ const SuccessMessage = ({
     deliveryType,
     onContinue,
 }: SuccessMessageProps) => {
+
+    const getDeliveryDate = (type: "standard" | "express" | "scheduled") => {
+        const today = new Date();
+
+        let deliveryDate = new Date(today);
+
+        if (type === "express") {
+            deliveryDate.setDate(today.getDate() + 1);
+        } else if (type === "standard") {
+            deliveryDate.setDate(today.getDate() + 3);
+        } else if (type === "scheduled") {
+            deliveryDate.setDate(today.getDate() + 5); // or custom logic
+        }
+
+        return deliveryDate.toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+        });
+    };
+
+    const deliveryText = () => {
+        const date = getDeliveryDate(deliveryType);
+
+        if (deliveryType === "express") {
+            return `Tomorrow, ${date} · Before 8 PM · Express Delivery `;
+        }
+
+        if (deliveryType === "scheduled") {
+            return `${date} · Scheduled Delivery`;
+        }
+
+        return `${date} · Standard Free Delivery`;
+    };
+
+    
+    
     return (
         <div>
             <div className="min-h-screen bg-cream-50 flex flex-col">
                 {/* Header */}
                 <header className="bg-white border-b border-cream-200 px-6 py-3.5 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-forest-500 rounded-full flex items-center justify-center text-sm">🌿</div>
-                        <span className="font-playfair font-bold text-lg text-forest-700">Satvik</span>
+                        {/* <div className="w-8 h-8 bg-forest-500 rounded-full flex items-center justify-center text-sm">🌿</div>
+                        <span className="font-playfair font-bold text-lg text-forest-700">Satvik</span> */}
+                    <img src="/logo.png" className=" h-16" alt="" />
                     </div>
                     <div className="flex items-center gap-1.5 text-xs font-dm font-bold text-forest-500 bg-forest-50 border border-forest-200 px-3 py-1.5 rounded-full">
                         <Lock className="w-3 h-3" /> Secure Checkout
@@ -75,7 +114,7 @@ const SuccessMessage = ({
                             <div>
                                 <p className="text-xs text-gray-500 font-dm">Estimated Delivery</p>
                                 <p className="text-sm font-dm font-bold text-forest-600">
-                                    {deliveryType === "express" ? "Tomorrow, 19 Mar · Before 8 PM" : "Thursday, 20 March · Standard Free Delivery"}
+                                    {deliveryText()}
                                 </p>
                             </div>
                         </div>

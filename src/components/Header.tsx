@@ -34,7 +34,7 @@ export default function Header() {
       return;
     }
 
-    // router.push("/account");
+    router.push("/account");
   };
 
   useEffect(() => {
@@ -62,20 +62,20 @@ export default function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${scrolled
           ? 'bg-cream/95 backdrop-blur-md shadow-sm border-b border-cream-dark'
-          : 'bg-transparent'
+          : 'bg-cream/90'
           }`}
       >
         {/* Top announcement bar */}
         <div className={`bg-forest text-cream text-xs font-body font-medium text-center py-2 px-4 tracking-wide ${scrolled && " hidden"}`}>
-          🌿 Free delivery on orders above ₹499 &nbsp;|&nbsp; Use code <span className="font-semibold text-gold-light">SATVIK10</span> for 10% off
+           Free delivery on orders above ₹499 &nbsp;|&nbsp; Use code <span className="font-semibold text-gold-light">SATVIK10</span> for 10% off
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-4 py-2 md:py-4">
             {/* Logo */}
 
-            <Link href={'/'} className=''>
-              <Image src={'/logo.png'} alt='logo' height={100} width={100} />
+            <Link href={'/'} className='w-20 h-16'>
+              <Image src={'/logo.png'} alt='logo' height={100} width={100} className='w-full h-auto' />
             </Link>
 
 

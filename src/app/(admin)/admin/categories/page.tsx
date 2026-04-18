@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, Search, AlertTriangle } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { SectionCard } from "../../components/Ui";
-
-
 import {
   getCategories,
   deleteCategory,
 } from "@/src/services/category.service";
-
 import { ICategory } from "@/src/types/category-types";
 import CategoriesTable from "../../components/category/Table";
 import { CategoryForm } from "../../components/category/Form";
@@ -18,7 +15,7 @@ import { CategoryForm } from "../../components/category/Form";
 export default function CategoryPage() {
   const [search, setSearch] = useState("");
   const [allCategories, setCategories] = useState<ICategory[] | null>(null);
-
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] =
     useState<ICategory | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | null>(null);
@@ -28,18 +25,31 @@ export default function CategoryPage() {
   );
 
 
+  const fetchingRef = useRef(false);
 
-  useEffect(() => {
-    const fetch = async () => {
+  const fetchCategories = async () => {
+    if (fetchingRef.current) return;
+
+    fetchingRef.current = true;
+    setLoading(true);
+
+    try {
       const data = await getCategories();
       setCategories(data);
-    };
-    fetch();
+    } finally {
+      setLoading(false);
+      fetchingRef.current = false;
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
   }, []);
 
-  const refreshCategories = async () => {
-    const data = await getCategories();
-    setCategories(data);
+  let refreshTimeout: NodeJS.Timeout;
+
+  const refreshCategories = () => {
+    clearTimeout(refreshTimeout);
+    refreshTimeout = setTimeout(fetchCategories, 300);
   };
 
   const handleSuccess = async () => {
@@ -50,7 +60,9 @@ export default function CategoryPage() {
 
   const handleDelete = async (id: string) => {
     await deleteCategory(id);
-    await refreshCategories();
+    setCategories((prev) =>
+      prev ? prev.filter((c) => c.id !== id) : prev
+    );
   };
 
   const handleCreate = () => {
@@ -120,6 +132,7 @@ export default function CategoryPage() {
       {/* Table */}
       <SectionCard>
         <CategoriesTable
+          isLoading={loading}
           categories={filtered}
           onEdit={(category) => handleEdit(category)}
           onDelete={(category) => handleDelete(category.id)}

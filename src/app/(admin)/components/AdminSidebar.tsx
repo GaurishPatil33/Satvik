@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
-import { useAuth } from "@/src/hooks/useAuth";
+import { useAuthStore } from "@/src/store/auth.store";
 
 const navGroups = [
     {
@@ -21,7 +21,7 @@ const navGroups = [
             { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
             { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
             { label: "Products", href: "/admin/products", icon: Package },
-            { label: "Categories", href: "/admin/categories", icon: Folder},
+            { label: "Categories", href: "/admin/categories", icon: Folder },
             { label: "Customers", href: "/admin/customers", icon: Users },
         ],
     },
@@ -43,10 +43,19 @@ const navGroups = [
 ];
 
 export function AdminSidebar() {
-    const { user, logout } = useAuth();
     const pathname = usePathname();
 
     const [collapsed, setCollapsed] = useState(false);
+    const { logout } = useAuthStore()
+    const handleLogout = async () => {
+        try {
+            await logout()
+            alert("logout successful")
+        } catch (err) {
+            console.log("Error : ", err)
+        }
+
+    }
 
     // Load saved state
     useEffect(() => {
@@ -190,7 +199,7 @@ export function AdminSidebar() {
                     )} */}
 
                     <button
-                        onClick={logout}
+                        onClick={handleLogout}
                         className="text-white/60 flex items-center gap-2  hover:text-white bg-white/20 p-1.5 rounded-full "
                     >
                         {!collapsed && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, Search, Edit2, Trash2, Star, AlertTriangle, X, Pen } from "lucide-react";
 import { Product } from "@/src/lib/types";
 import { cn, formatPrice } from "@/src/lib/utils";
@@ -10,18 +10,24 @@ import ProductsTable from "../../components/product/Table";
 import { IProduct } from "@/src/types/products-types";
 import { deleteProduct, getProducts } from "@/src/services/product.service";
 import { ProductForm } from "../../components/product/ProductModal";
+import { getCategories } from "@/src/services/category.service";
+import { ICategory } from "@/src/types/category-types";
 
 
 
 export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [allProducts, setProducts] = useState<IProduct[] | null>();
+  const [allProducts, setProducts] = useState<IProduct[]>();
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const fetchingRef = useRef(false);
 
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [mode, setMode] = useState<"create" | "edit" | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const categories = ["all", "oil", "jaggery", "sugar", "salt"];
+  const categories1 = ["all", "oil", "jaggery", "sugar", "salt"];
+
   const filtered = allProducts?.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
     const matchCat = categoryFilter === "all" || p.category_ids.includes(categoryFilter);
@@ -29,29 +35,45 @@ export default function ProductsPage() {
   });
   const lowStockProduct = allProducts?.find(p => Number(p.stock_quantity) <= 15);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const p = await getProducts()
-      setProducts(p)
+
+  const fetchAll = async () => {
+    if (fetchingRef.current) return;
+
+    fetchingRef.current = true;
+    setLoading(true);
+
+    try {
+      const [p, c] = await Promise.all([
+        getProducts(),
+        getCategories(),
+      ]);
+
+      setProducts(p);
+      setCategories(c);
+    } finally {
+      setLoading(false);
+      fetchingRef.current = false;
     }
-    fetch()
-  }, [])
-
-
-  const refreshProducts = async () => {
-    const data = await getProducts();
-    setProducts(data);
   };
 
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
   const handleSuccess = async () => {
-    await refreshProducts();
+    await fetchAll();
     setMode(null);
     setSelectedProduct(null);
   };
 
   const handleDelete = async (id: string) => {
-    await deleteProduct(id);
-    await refreshProducts();
+    setProducts((prev) => prev?.filter((p) => p.id !== id));
+
+    try {
+      await deleteProduct(id);
+    } catch {
+      await fetchAll(); // rollback
+    }
   };
 
   const handleCreate = () => {
@@ -109,7 +131,7 @@ export default function ProductsPage() {
           />
         </div>
         <div className="flex gap-2">
-          {categories.map((c) => (
+          {categories1.map((c) => (
             <button
               key={c}
               onClick={() => setCategoryFilter(c)}
@@ -129,6 +151,8 @@ export default function ProductsPage() {
       {/* Products table */}
       <SectionCard >
         <ProductsTable
+          isloading={loading}
+          categories={categories}
           products={filtered}
           onEdit={(product) => handleEdit(product)}
           onDelete={(product) => handleDelete(product.id)}

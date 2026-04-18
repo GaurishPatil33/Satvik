@@ -1,11 +1,8 @@
-import { Product } from "@/src/lib/types";
-import { updateProduct, createProduct } from "@/src/services/product.service";
-import { IProduct } from "@/src/types/products-types";
+
 import { ChevronDown, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { cn } from "@/src/lib/utils";
 import { ICategory } from "@/src/types/category-types";
 import { createCategory, getCategories, updateCategory } from "@/src/services/category.service";
 import { deleteImage, uploadImage } from "@/src/services/upload.service";
@@ -34,6 +31,7 @@ export function CategoryForm({ initialData, id, onClose, onSuccess }: CategoryFo
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
 
+    const uploadPathRef = useRef<string[]>([])
 
     useEffect(() => {
         const fetch = async () => {
@@ -65,6 +63,9 @@ export function CategoryForm({ initialData, id, onClose, onSuccess }: CategoryFo
 
             for (const file of Array.from(files)) {
                 const res = await uploadImage(file, "categories");
+
+                uploadPathRef.current.push(res.path)
+
                 uploadedMedia.push({
                     url: res.publicUrl,
                     public_id: res.path,
@@ -86,12 +87,14 @@ export function CategoryForm({ initialData, id, onClose, onSuccess }: CategoryFo
     // imageDelete
     const handleRemoveImage = async (publicId: string, index: number) => {
         try {
+            // console.log("Deleting:", publicId);
             await deleteImage(publicId);
-
             setForm(prev => ({
                 ...prev,
                 media: prev.media?.filter((_, i) => i !== index),
             }));
+
+            uploadPathRef.current = uploadPathRef.current.filter(p => p !== publicId)
         } catch (err) {
             console.error(err);
         }
@@ -124,12 +127,26 @@ export function CategoryForm({ initialData, id, onClose, onSuccess }: CategoryFo
                 console.log("Category created!");
             }
 
+            uploadPathRef.current = []
+
+
             router.push("/admin/categories");
             router.refresh();
             onSuccess?.()
             onClose()
         } catch (err: any) {
             console.error({ api: err.message });
+           
+            if(uploadPathRef.current.length>0){
+                for (const path of uploadPathRef.current){
+                    try{
+                        await deleteImage(path)
+                    }
+                    catch(clenupErr){
+                        console.error("image delete failed : ",clenupErr)
+                    }
+                }
+            }
             alert("Something went wrong" + err);
         } finally {
             setLoading(false);
@@ -235,7 +252,8 @@ export function CategoryForm({ initialData, id, onClose, onSuccess }: CategoryFo
                                         <Image
                                             src={img.url}
                                             alt="product"
-                                            fill
+                                            width={100} 
+                                            height={100}
                                             className="object-cover"
                                         />
 

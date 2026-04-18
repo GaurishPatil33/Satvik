@@ -23,7 +23,7 @@ export function InfoTabs() {
         <div className="max-w-7xl mx-auto px-5 mt-8">
 
             {/* Tabs Header */}
-            <div className="flex border-b-2 border-cream-200 overflow-x-auto">
+            <div className="flex border-b-2 border-cream-200 overflow-x-auto overflow-y-hidden" >
                 {TABS.map((tab) => (
                     <button
                         key={tab.id}

@@ -36,8 +36,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       quantity:1,
       variant: {
         size: selectedVariant.size,
-        price: finalCouponPrice,
-        discount: 0,
+        price: selectedVariant.price,
+        discount: selectedVariant.discount,
       },
     });
 

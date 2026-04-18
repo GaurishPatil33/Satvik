@@ -14,9 +14,9 @@ export interface CartItem {
     product: Product;
     quantity: number;
     variant?: {
-        size?: string | number;
-        price?: number;
-        discount?: number;
+        size: string | number;
+        price: number|string;
+        discount: number|string;
     };
 }
 

@@ -211,7 +211,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
     const savingsPerItem = (basePrice * discount) / 100;
     const savings = savingsPerItem * item.quantity;
 
-    console.log(basePrice)
+    // console.log(basePrice,discount,totalPrice)
 
     return (
       <div
@@ -323,15 +323,15 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             aria-modal="true"
             aria-label="Shopping cart"
             className={`fixed top-0 right-0 z-50 h-full w-full max-w-[400px] bg-[#FEFBF5] shadow-2xl
-          flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
-          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+          flex flex-col transform transition-all duration-400 ease-[cubic-bezier(0.24,1,0.36,1)] 
+          ${isOpen ? "translate-x-0 opacity-100"  : "translate-x-[110%] opacity-0"}`}
           >
             {/* ── Header ── */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#EEE8DC] bg-[#FDF6EC]">
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-[#2C4A2E] flex items-center justify-center">
                   {/* <Leaf size={13} className="text-[#FDF6EC]" /> */}
-                  <ShoppingCart />
+                  <ShoppingCart size={18} className="text-white" />
                 </div>
                 <div>
                   <h2 className="text-[15px] font-bold text-[#2C4A2E] leading-none font-[family-name:var(--font-display,serif)]">
@@ -465,7 +465,7 @@ export function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 <div className="px-5 pb-5 pt-2 space-y-2">
                   <button className="w-full py-3.5 rounded-xl bg-[#2C4A2E] text-[#FDF6EC] text-[14px] font-bold
                 hover:bg-[#3D6B40] active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2
-                font-[family-name:var(--font-display,serif)]" onClick={() => router.push("checkout")}>
+                font-[family-name:var(--font-display,serif)]" onClick={() => router.push("/checkout")}>
                     Proceed to Checkout
                     <ChevronRight size={16} />
                   </button>

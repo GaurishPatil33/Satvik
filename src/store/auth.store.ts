@@ -4,13 +4,14 @@ import { IUser } from "@/src/types/user-types";
 import {
   getCurrentUser,
   loginUser,
+  logout,
   registerUser,
 } from "@/src/services/auth.service";
 import { error } from "console";
 
 interface AuthState {
   user: IUser | null;
-  token: string | null;
+  // token: string | null; getting no token err
   loading: boolean;
   hasHydrated: boolean;
   error: string | null
@@ -23,7 +24,7 @@ interface AuthState {
     phone: string;
     password: string;
   }) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   fetchCurrentUser: () => Promise<void>;
 }
 
@@ -31,22 +32,24 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
+      // token: null,
       loading: false,
       hasHydrated: false,
       error: null,
 
       /* LOGIN */
       login: async (email, password) => {
-        set({ loading: true });
+        set({ loading: true, error: null });
 
         try {
           const res = await loginUser({ email, password });
 
           set({
             user: res.user,
-            token: res.token,
+            // token: res.token,
           });
+        } catch (err: any) {
+          set({ error: err.message || "login failed!" })
         } finally {
           set({ loading: false });
         }
@@ -54,7 +57,7 @@ export const useAuthStore = create<AuthState>()(
 
       /* REGISTER */
       register: async (data) => {
-        set({ loading: true });
+        set({ loading: true, error: null });
 
         try {
           //  create account
@@ -68,27 +71,21 @@ export const useAuthStore = create<AuthState>()(
 
           set({
             user: res.user,
-            token: res.token,
+            // token: res.token,
           });
+        } catch (err: any) {
+          set({ error: err.message || "Register failed" });
         } finally {
           set({ loading: false });
         }
       },
 
-      logout: () => {
 
-        set({
-          user: null,
-          token: null,
-          error: null
-        });
-        // useAuthStore.persist.clearStorage();
-      },
 
       fetchCurrentUser: async () => {
-        const token = useAuthStore.getState().token;
+        // const token = useAuthStore.getState().token;
 
-        if (!token) return; // no token → skip
+        // if (!token) return; // no token → skip
 
         set({ loading: true });
 
@@ -96,13 +93,36 @@ export const useAuthStore = create<AuthState>()(
           const user = await getCurrentUser();
 
           set({ user });
-        } catch (err) {
+        } catch {
+          // catch (err) {
           // token might be invalid → logout
-          useAuthStore.getState().logout();
-        } finally {
+          // useAuthStore.getState().logout();
+
+          set({ user: null })
+
+        }
+        finally {
           set({ loading: false });
         }
       },
+
+      logout: async () => {
+
+        // set({
+        //   user: null,
+        //   token: null,
+        //   error: null
+        // });
+        // useAuthStore.persist.clearStorage();
+        try {
+          await logout()
+        } finally {
+          set({ user: null })
+        }
+
+      },
+
+
     }),
     {
       name: "auth-storage",

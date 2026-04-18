@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../store/auth.store";
 
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL || "https://e-com-be-1-av8z.onrender.com/api/v1" || "http://localhost:5000/api/v1";
 
 // export const apiFetch = async (
 //   endpoint: string,
@@ -36,7 +36,7 @@ export const API_BASE =
 
 export const api = axios.create({
   baseURL: API_BASE,
-  withCredentials:true,
+  withCredentials: true,
   headers: { "Content-type": "application/json" }
 })
 

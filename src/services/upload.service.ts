@@ -48,5 +48,5 @@ export async function deleteImage(path: string) {
     throw error;
   }
 
-  console.log("Deleted:", path);
+  // console.log("Deleted:", path);
 }

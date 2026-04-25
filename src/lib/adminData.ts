@@ -25,7 +25,7 @@ export interface Order {
   updatedAt: string;
 }
 
-export const orders: Order[] = [
+export const orders1: Order[] = [
   {
     id: "o1", orderNumber: "SAT-2024-1001",
     customer: { name: "Priya Sharma", email: "priya@gmail.com", phone: "+91 98765 43210", avatar: "PS" },

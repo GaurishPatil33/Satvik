@@ -22,6 +22,6 @@ export const deleteMyAccount = async (): Promise<void> => {
 
 /* ADMIN* get all users*/
 export const getAllUsers = async (): Promise<IUser[]> => {
-  const res = await api.put("/users");
+  const res = await api.get("/users");
   return res.data
 };

@@ -154,7 +154,6 @@ export default function CustomersPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const { users } = useAdminUsers()
-  const { user, isReady } = useAuth()
   
 
   const filtered = customers.filter((c) => {
@@ -180,14 +179,6 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      {users.map(u => (
-        <div className=" flex flex-col bg-red-50 text-gray-500 ">
-
-          <div className="">{u.first_name}</div>
-          <div className="">{u.last_name}</div>
-          <div className="">{u.email}</div>
-        </div>
-      ))}
 
 
       {/* Quick stats */}

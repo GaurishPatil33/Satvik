@@ -1,7 +1,7 @@
 import { cn } from "@/src/lib/utils";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
-export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded";
+export type OrderStatus = "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "refunded"|"processing"|"returned";
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 interface StatCardProps {
     label: string;
@@ -47,11 +47,13 @@ export function StatCard({ label, value, change, icon, prefix = "", suffix = "",
 // ─── Order Status Badge ───────────────────────────────────────────────────────
 const statusConfig: Record<OrderStatus, { label: string; className: string }> = {
     pending: { label: "Pending", className: "bg-yellow-50 text-yellow-700 border-yellow-200" },
+    processing: { label: "Processing", className: "bg-yellow-50 text-yellow-700 border-yellow-200" },
     confirmed: { label: "Confirmed", className: "bg-blue-50 text-blue-700 border-blue-200" },
     shipped: { label: "Shipped", className: "bg-indigo-50 text-indigo-700 border-indigo-200" },
     delivered: { label: "Delivered", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
     cancelled: { label: "Cancelled", className: "bg-red-50 text-red-600 border-red-200" },
     refunded: { label: "Refunded", className: "bg-gray-50 text-gray-600 border-gray-200" },
+    returned: { label: "Returned", className: "bg-gray-50 text-gray-600 border-gray-200" },
 };
 
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {

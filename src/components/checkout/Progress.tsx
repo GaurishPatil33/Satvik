@@ -1,6 +1,6 @@
 "use client";
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3
 
 interface CheckoutProgressProps {
     steps: string[];

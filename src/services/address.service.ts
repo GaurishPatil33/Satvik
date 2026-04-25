@@ -1,5 +1,15 @@
 import { IAddress } from "../types/user-types";
 import { api } from "./api";
+export type CreateAddressPayload = {
+  full_name: string;
+  phone: string;
+  street: string;
+  city: string;
+  state?: string;
+  postal_code: string;
+  country: string;
+  is_default: boolean;
+};
 
 
 // Get user address
@@ -18,8 +28,8 @@ export const getAddressById = async (id: string): Promise<IAddress> => {
 
 //  CReate
 export const createAddress = async (
-  data: Omit<IAddress, "id" | "created_at" | "updated_at">
-): Promise<IAddress> => {
+  data: CreateAddressPayload
+) => {
   const res = await api.post("/addresses", data);
   return res.data;
 };

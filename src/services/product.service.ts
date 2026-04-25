@@ -7,12 +7,8 @@ export const getProducts = async (): Promise<IProduct[]> => {
   const res = await api.get("/products");
   return res.data;
 
-  // return apiFetch("/products", {
-  // method: "GET",
-  // body: JSON.stringify(),
-  // });
-};
 
+};
 
 // Get single product
 export const getProductById = async (id: string): Promise<IProduct> => {
@@ -20,16 +16,24 @@ export const getProductById = async (id: string): Promise<IProduct> => {
   return res.data;
 };
 
+// Get multiple products by ids
+export const getProductsByIds = async (ids: string[]): Promise<IProduct[]> => {
+  const uniqueIds = Array.from(new Set(ids));
 
+  const res = await api.get("/products", {
+    params: { ids: uniqueIds.join(",") }
+  });
+
+  return res.data;
+};
+
+
+//Admin only
 // Create
 export const createProduct = async (data: Partial<IProduct>): Promise<IProduct> => {
   const res = await api.post("/products", data);
   return res.data;
-  // return apiFetch("/products", {
-  //   method: "POST",
-  //   body: JSON.stringify(data),
-  // });
-};
+}
 
 
 // update

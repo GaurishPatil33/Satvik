@@ -21,13 +21,18 @@ const OrderSummary = ({
     deliveryFee,
     codFee,
 }: Props) => {
-    const { items, removeFromCart, getSubtotal, getGrandTotal, getDiscountTotal } = useCartStore()
+    const { items, removeFromCart, hasHydrated, getSubtotal, getGrandTotal, getDiscountTotal } = useCartStore()
     const itemDiscount = getDiscountTotal()
     const finalPrice =
-        getSubtotal() -
-        getDiscountTotal() +
+        Number(getGrandTotal()) +
         deliveryFee +
         codFee
+
+    const totalItems = items.length
+    const subTotal = getSubtotal()
+    const discountTotal = getDiscountTotal()
+
+    if (!hasHydrated) return null
 
     return (
         <div className="lg:sticky lg:top-24">
@@ -62,8 +67,8 @@ const OrderSummary = ({
                     {/* Price lines */}
                     <div className="border-t border-cream-200 pt-4 space-y-2.5">
                         <div className="flex justify-between text-sm font-dm">
-                            <span className="text-gray-500">Subtotal ({items.length})</span>
-                            <span className="font-semibold text-gray-700">₹{getSubtotal()}</span>
+                            <span className="text-gray-500">Subtotal ({totalItems})</span>
+                            <span className="font-semibold text-gray-700">₹{subTotal}</span>
                         </div>
                         <div className="flex justify-between text-sm font-dm">
                             <span className="text-gray-500">Product Discount</span>
@@ -72,7 +77,7 @@ const OrderSummary = ({
                         {couponApplied && (
                             <div className="flex justify-between text-sm font-dm">
                                 <span className="text-gray-500">Coupon (SATVIK10)</span>
-                                <span className="font-semibold text-green-600">−₹{getDiscountTotal()}</span>
+                                <span className="font-semibold text-green-600">−₹{discountTotal}</span>
                             </div>
                         )}
                         <div className="flex justify-between text-sm font-dm">
@@ -101,7 +106,7 @@ const OrderSummary = ({
                     )} */}
 
                     {/* Place order - only on step 3 */}
-                    {step === 3 && (
+                    {step === 2 && (
                         <>
                             <button
                                 onClick={onPlaceOrder}

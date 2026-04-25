@@ -17,7 +17,7 @@ import { ICategory } from "@/src/types/category-types";
 
 export default function ProductsPage() {
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState<string|"all">("all");
   const [allProducts, setProducts] = useState<IProduct[]>();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const fetchingRef = useRef(false);
@@ -26,13 +26,30 @@ export default function ProductsPage() {
   const [mode, setMode] = useState<"create" | "edit" | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const categories1 = ["all", "oil", "jaggery", "sugar", "salt"];
+  // const categoriesFiltersLabel = ["all", "oil", "jaggery", "sugar", "salt"];
+const categoriesFilters = [
+  { id: "all", name: "All" },
+  ...categories.map((c) => ({
+    id: c.id,
+    name: c.name
+  }))
+];
 
-  const filtered = allProducts?.filter((p) => {
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
-    const matchCat = categoryFilter === "all" || p.category_ids.includes(categoryFilter);
-    return matchSearch && matchCat;
-  });
+const filtered = allProducts?.filter((p) => {
+  const matchSearch = p.title
+    .toLowerCase()
+    .includes(search.toLowerCase());
+
+  if (categoryFilter === "all") return matchSearch;
+
+  const matchCat = p.category_ids
+    .map(String)
+    .includes(String(categoryFilter));
+
+  return matchSearch && matchCat;
+});
+
+
   const lowStockProduct = allProducts?.find(p => Number(p.stock_quantity) <= 15);
 
 
@@ -131,18 +148,19 @@ export default function ProductsPage() {
           />
         </div>
         <div className="flex gap-2">
-          {categories1.map((c) => (
+          {categoriesFilters.map((c) => (
             <button
-              key={c}
-              onClick={() => setCategoryFilter(c)}
+              key={c.id}
+              onClick={() => setCategoryFilter(c.id)}
               className={cn(
                 "px-4 py-2 rounded-xl text-sm font-body font-medium transition-all capitalize",
-                categoryFilter === c
+                categoryFilter === c.id
                   ? "bg-[#1A2E1B] text-white"
                   : "bg-white text-gray-500 border border-gray-200 hover:border-gray-300"
               )}
             >
-              {c === "all" ? "All" : c}
+              {/* {c === "all" ? "All" : c.name} */}
+              { c.name}
             </button>
           ))}
         </div>

@@ -1,8 +1,8 @@
 export interface IOrder {
-    id: string; 
+    id: string;
     user_id: string;
     items: {
-        product_id: string; 
+        product_id: string;
         title: string;
         quantity: number;
         price_at_purchase: number;

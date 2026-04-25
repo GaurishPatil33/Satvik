@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const menuItems = [
   { name: "Dashboard", icon: "🏠", path: "/" },
@@ -9,55 +9,58 @@ const menuItems = [
   { name: "Users", icon: "👤", path: "/users" },
   { name: "Settings", icon: "⚙️", path: "/settings" },
 ];
+interface Props {
+  isOpen: boolean
+  onClose: () => void
+}
 
-export default function MobileSidebar() {
+export default function MobileSidebar({ isOpen, onClose }: Props) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      {/* <div
-        className={`h-screen bg-gray-900 text-white transition-all duration-300 ${
-          collapsed ? "w-20" : "w-64"
-        }`}
-      >
-        <div className="p-4 flex items-center justify-between">
-          {!collapsed && <h1 className="text-lg font-bold">Admin</h1>}
-          <button onClick={() => setCollapsed(!collapsed)}>
-            <Menu size={20} />
-          </button>
-        </div>
+    <>
+      {isOpen && (
 
-        <ul className="mt-6 space-y-2">
-          {menuItems.map((item) => (
-            <li key={item.name} className="relative group">
-              <Link
-                href={item.path}
-                className="flex items-center gap-3 px-4 py-2 hover:bg-gray-800 rounded"
+        <>
+          {/* overlay */}
+          < div
+            onClick={onClose}
+            aria-hidden="true"
+            className={`fixed inset-0 z-40 transition-all duration-300 ${isOpen
+              ? "bg-black/40 backdrop-blur-[2px] pointer-events-auto"
+              : "bg-transparent pointer-events-none"
+              }`}
+          />
+
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping cart"
+            className={`fixed top-0 right-0 z-50 h-full w-full max-w-[400px] bg-[#FEFBF5] shadow-2xl
+            flex flex-col transform transition-all duration-400 ease-[cubic-bezier(0.24,1,0.36,1)] 
+            ${isOpen ? "animate-slide-in-right" : "animate-slide-out-right"}`}
+          >
+            {/* ── Header ── */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#EEE8DC] bg-[#FDF6EC]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 flex items-center justify-center">
+                  {/* <Leaf size={13} className="text-[#FDF6EC]" /> */}
+                </div>
+                <div>
+                  <h2 className="text-[15px] font-bold text-[#2C4A2E] leading-none font-[family-name:var(--font-display,serif)]">
+                  </h2>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-full hover:bg-[#EEE8DC] flex items-center justify-center transition-colors text-[#8B5E3C]"
+                aria-label="Close cart"
               >
-                <span>{item.icon}</span>
-                {!collapsed && <span>{item.name}</span>}
-              </Link>
-
-              {collapsed && (
-                <span className="absolute left-20 top-1/2 -translate-y-1/2 
-                  whitespace-nowrap bg-gray-800 text-sm px-2 py-1 rounded 
-                  opacity-0 group-hover:opacity-100 transition">
-                  {item.name}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div
-        className={`flex-1 p-6 transition-all duration-300 ${
-          collapsed ? "ml-20" : "ml-64"
-        }`}
-      >
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-      </div> */}
-    </div>
-  );
+                <X size={16} />
+              </button>
+            </div>
+          </aside>
+        </>)}
+    </>
+  )
 }

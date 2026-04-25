@@ -75,13 +75,14 @@ export default function CategoriesTable({
                 {/* Category (image + name) */}
                 <td className="py-3 px-4 flex items-center gap-3">
                   {cat.media?.[0]?.url ? (
-                    <Image
-                      src={cat.media[0].url}
-                      alt={cat.name}
-                      width={50}
-                      height={40}
-                      className="rounded-lg object-contain"
-                    />
+                    <div className="relative w-12 h-12 ">
+                      <Image
+                        src={cat.media[0].url}
+                        alt={cat.name}
+                        fill sizes="48px"
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
                   ) : (
                     <Package className="size-9 bg-gray-100 rounded-lg text-forest-700" />
                   )}
@@ -106,7 +107,11 @@ export default function CategoriesTable({
                 </td>
 
                 <td className="py-3 px-4 text-gray-500">
-                  {new Date(cat.created_at).toLocaleDateString()}
+                  {new Date(cat.updated_at).toLocaleDateString("en-US",{
+                    day:"2-digit",
+                    month:"2-digit",
+                    year:"numeric"
+                  })}
                 </td>
 
                 <td className="px-5 py-4 flex">

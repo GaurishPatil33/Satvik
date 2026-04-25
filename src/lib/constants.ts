@@ -1,0 +1,2 @@
+export const FREE_DELIVERY_THRESHOLD = 499;
+export const SAVINGS_THRESHOLD = 999;

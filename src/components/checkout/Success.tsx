@@ -1,6 +1,8 @@
 
 import { Truck, Lock } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
 
 interface SuccessMessageProps {
     firstName?: string;
@@ -10,8 +12,6 @@ interface SuccessMessageProps {
     deliveryType: "standard" | "express" | "scheduled";
     onContinue: () => void;
 }
-
-
 
 const SuccessMessage = ({
     firstName,
@@ -56,8 +56,39 @@ const SuccessMessage = ({
         return `${date} · Standard Free Delivery`;
     };
 
-    
-    
+    useEffect(() => {
+        const duration = 1500;
+        const end = Date.now() + duration;
+
+        const colors = ["#16a34a", "#22c55e", "#4ade80"];
+
+        (function frame() {
+            // confetti({
+            //     particleCount: 4,
+            //     angle: 60,
+            //     spread: 70,
+            //     origin: { x: 0 },
+            //     // colors,
+            // });
+
+            // confetti({
+            //     particleCount: 4,
+            //     angle: 120,
+            //     spread: 70,
+            //     origin: { x: 1 },
+            //     // colors,
+            // });
+            confetti({
+                particleCount:3 ,
+                spread: 50,
+                origin: { y: 0.3 ,z:-10},
+            });
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        })();
+    }, []);
+
     return (
         <div>
             <div className="min-h-screen bg-cream-50 flex flex-col">
@@ -66,7 +97,7 @@ const SuccessMessage = ({
                     <div className="flex items-center gap-2">
                         {/* <div className="w-8 h-8 bg-forest-500 rounded-full flex items-center justify-center text-sm">🌿</div>
                         <span className="font-playfair font-bold text-lg text-forest-700">Satvik</span> */}
-                    <img src="/logo.png" className=" h-16" alt="" />
+                        <img src="/logo.png" className=" h-16" alt="" />
                     </div>
                     <div className="flex items-center gap-1.5 text-xs font-dm font-bold text-forest-500 bg-forest-50 border border-forest-200 px-3 py-1.5 rounded-full">
                         <Lock className="w-3 h-3" /> Secure Checkout

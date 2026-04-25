@@ -4,12 +4,12 @@ import { Search, Heart, ShoppingCart, Menu, X, Leaf, User2Icon } from 'lucide-re
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '../hooks/useAuth'
 import { useAuthModalStore } from '../store/authModal.store'
 import MobilUser from './login&register/MobilUser'
 import LoginPage from './login&register/MobilUser'
 import MobileSidebar from './MobileMenu'
 import { CartSidebar } from './cart/CartSidebar'
+import { useAuth } from '../hooks/useAuth'
 const placeholderOptions = [
   'Cold pressed groundnut oil',
   'Organic jaggery',
@@ -33,8 +33,8 @@ export default function Header() {
       openLogin();
       return;
     }
-
     router.push("/account");
+
   };
 
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function Header() {
                     }`}
                 />
               </button>
-              <button className="relative p-2 rounded-full hover:bg-cream-dark transition-colors group">
+              <button className="relative p-2 hidden :block rounded-full hover:bg-cream-dark transition-colors group">
                 <Heart size={20} className="text-bark/70 group-hover:text-terra transition-colors" />
                 {/* <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-terra text-cream text-[9px] font-bold rounded-full flex items-center justify-center">2</span> */}
               </button>
@@ -147,17 +147,12 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="">
-            {/* <LoginPage /> */}
-            <MobileSidebar />
-          </div>
-        )}
-
-        {/* cart */}
-
       </header>
+        {/* Mobile menu */}
+       
+
+      <MobileSidebar isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        {/* cart  sidebar */}
       <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   )

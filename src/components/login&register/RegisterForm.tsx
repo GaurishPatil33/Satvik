@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "./Inputfield";
 import SocialBtn from "./SocialBtn";
 import PasswordStrength from "./Passwordstrength";
-import { useAuth } from "@/src/hooks/useAuth";
 import { CiLock, CiMail, CiMobile3, CiUser } from "react-icons/ci";
 import { FaFacebook } from "react-icons/fa";
 import { GrGoogle } from "react-icons/gr";
 import { validateName, validateEmail, validatePhone, validatePassword } from "@/src/lib/validators";
 import { useAuthModalStore } from "@/src/store/authModal.store";
+import { useAuthStore } from "@/src/store/auth.store";
 
 interface RegisterPageProps {
     onSwitch: () => void;
@@ -50,12 +50,20 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
     });
     const [errors, setErrors] = useState<Partial<RegisterErrors>>({});
     const [done, setDone] = useState<boolean>(false);
-    const { register, loading } = useAuth();
+    const [submitted, setSubmitted] = useState(false);
+    const { register, loading, error: authError } = useAuthStore();
     const { close } = useAuthModalStore();
 
 
-    const isStep1valid = form.firstName && form.lastName && form.email && form.phone;
+    const isStep1valid =
+        !validateName(form.firstName) &&
+        !validateName(form.lastName) &&
+        !validateEmail(form.email) &&
+        !validatePhone(form.phone);
+
     const step2Valid = form.password && form.confirm && form.password === form.confirm && form.agreed;
+
+    
     // step1 validate
     const validateStep1 = () => {
         const newErrors: RegisterErrors = {
@@ -87,28 +95,54 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
 
     const handleSubmit = async () => {
         if (!validateStep2()) return;
+        setSubmitted(true)
 
-        try {
-            await register({
-                first_name: form.firstName,
-                last_name: form.lastName,
-                email: form.email,
-                phone: form.phone,
-                password: form.password,
-            });
-
-            setDone(true);
-
-            setTimeout(() => {
-                close();
-            }, 1500);
-
-        } catch (err: any) {
-            setErrors({ api: err.message || "Registration failed" });
-            console.log({ api: err.message || "Registration failed" });
-        }
+        await register({
+            first_name: form.firstName,
+            last_name: form.lastName,
+            email: form.email,
+            phone: form.phone,
+            password: form.password,
+        })
     };
 
+    useEffect(() => {
+        if (!submitted) return
+
+        if (authError) {
+            setErrors({ api: authError });
+            setSubmitted(false)
+            return;
+        }
+
+        // success = user logged in
+        if (!authError && !loading) {
+            setDone(true);
+            setTimeout(close, 1500);
+        }
+    }, [authError, loading]);
+
+
+    const validateField = (name: keyof RegisterForm, value: string) => {
+        let message = "";
+
+        switch (name) {
+            case "firstName":
+                message = validateName(value);
+                break;
+            case "lastName":
+                message = validateName(value);
+                break;
+            case "email":
+                message = validateEmail(value);
+                break;
+            case "phone":
+                message = validatePhone(value);
+                break;
+        }
+
+        setErrors(prev => ({ ...prev, [name]: message }));
+    };
 
     return (
         <div className="animate-[fadeIn_0.4s_ease] md:h-fit max-h-[80%] overflow-y-auto">
@@ -119,6 +153,12 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
             <p className="text-gray-500 text-sm mb-6 font-dmSans">
                 Create your account and start living naturally
             </p>
+
+            {errors.api && (
+                <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                    {errors.api}
+                </div>
+            )}
 
             {done ? (
                 <div className="text-center py-6">
@@ -134,7 +174,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
 
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                         <p className="text-sm text-green-800 font-dmSans">
-                             We've sent a <strong>10% off coupon</strong> to your email.
+                            We've sent a <strong>10% off coupon</strong> to your email.
                         </p>
                     </div>
 
@@ -190,61 +230,78 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
                             </div>
 
                             <InputField
+                                id="firstName"
+                                name="firstName"
                                 label="First Name"
-                                placeholder="abc"
+                                placeholder="John"
                                 icon={<CiUser />}
                                 value={form.firstName}
-                                onChange={(e) =>
-                                    setForm((f) => ({ ...f, firstName: e.target.value }))
-                                }
+                                autoComplete="given-name"
+                                required
+                                error={errors.firstName}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setForm((f) => ({ ...f, firstName: value }));
+                                    validateField("firstName", value);
+                                }}
                             />
-                            {errors.firstName && (
-                                <p className="text-red-500 text-xs -mt-3 mb-2">{errors.firstName}</p>
-                            )}
 
 
                             <InputField
-                                label="last Name"
-                                placeholder="xyz"
+                                id="lastName"
+                                name="lastName"
+                                label="Last Name"
+                                placeholder="Doe"
                                 icon={<CiUser />}
                                 value={form.lastName}
-                                onChange={(e) =>
-                                    setForm((f) => ({ ...f, lastName: e.target.value }))
-                                }
+                                autoComplete="family-name"
+                                required
+                                error={errors.lastName}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setForm((f) => ({ ...f, lastName: value }));
+                                    validateField("lastName", value);
+                                }}
                             />
-                            {errors.lastName && (
-                                <p className="text-red-500 text-xs -mt-3 mb-2">{errors.lastName}</p>
-                            )}
-
 
                             <InputField
+                                id="email"
+                                name="email"
                                 label="Email Address"
                                 type="email"
                                 placeholder="you@example.com"
                                 icon={<CiMail />}
                                 value={form.email}
-                                onChange={(e) =>
-                                    setForm((f) => ({ ...f, email: e.target.value }))
-                                }
+                                autoComplete="email"
+                                required
+                                error={errors.email}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setForm((f) => ({ ...f, email: value }));
+                                    validateField("email", value);
+                                }}
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-xs -mt-3 mb-2">{errors.email}</p>
-                            )}
 
                             <InputField
+                                id="phone"
+                                name="phone"
                                 label="Mobile Number"
                                 type="tel"
-                                placeholder="+91 99999 99999"
+                                placeholder="9999999999"
                                 icon={<CiMobile3 />}
                                 hint="We'll send your order updates here"
                                 value={form.phone}
-                                onChange={(e) =>
-                                    setForm((f) => ({ ...f, phone: e.target.value }))
-                                }
+                                maxlength={10}
+                                autoComplete="tel"
+                                required
+                                error={errors.phone}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setForm((f) => ({ ...f, phone: value }));
+                                    validateField("phone", value);
+                                }}
                             />
-                            {errors.phone && (
-                                <p className="text-red-500 text-xs -mt-3 mb-2">{errors.phone}</p>
-                            )}
+
 
                             <button
                                 onClick={() => { if (validateStep1()) setStep(2) }}
@@ -283,35 +340,39 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitch }) => {
                                 </div>
 
                                 <InputField
+                                    id="password"
+                                    name="password"
                                     label="Create Password"
                                     type="password"
                                     placeholder="Min 8 characters"
                                     icon={<CiLock />}
                                     value={form.password}
+                                    autoComplete="new-password"
+                                    required
+                                    error={errors.password}
                                     onChange={(e) =>
                                         setForm((f) => ({ ...f, password: e.target.value }))
                                     }
                                 />
-                                {errors.password && (
-                                    <p className="text-red-500 text-xs -mt-3 mb-4">{errors.password}</p>
-                                )}
+
 
                                 <PasswordStrength password={form.password} />
 
                                 <InputField
+                                    id="confirmPassword"
+                                    name="confirmPassword"
                                     label="Confirm Password"
                                     type="password"
                                     placeholder="Repeat your password"
                                     icon={<CiLock />}
                                     value={form.confirm}
+                                    autoComplete="new-password"
+                                    required
+                                    error={errors.confirm}
                                     onChange={(e) =>
                                         setForm((f) => ({ ...f, confirm: e.target.value }))
                                     }
                                 />
-                                {errors.confirm && (
-                                    <p className="text-red-500 text-xs -mt-3 mb-2">{errors.confirm}</p>
-                                )}
-
                                 {form.confirm && form.password !== form.confirm && (
                                     <p className="text-red-500 text-xs -mt-3 mb-4">
                                         ⚠️ Passwords don't match

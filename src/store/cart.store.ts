@@ -5,8 +5,8 @@ import { Product } from "../lib/types";
 
 export interface CartVariant {
     size?: string | number;
-    price?: number|string;
-    discount?: number|string;
+    price?: number | string;
+    discount?: number | string;
 }
 
 export interface CartItem {
@@ -15,8 +15,8 @@ export interface CartItem {
     quantity: number;
     variant?: {
         size: string | number;
-        price: number|string;
-        discount: number|string;
+        price: number | string;
+        discount: number | string;
     };
 }
 
@@ -32,6 +32,8 @@ interface CartState {
     getSubtotal: () => number;
     getDiscountTotal: () => number;
     getGrandTotal: () => number;
+    hasHydrated: boolean;
+    setHasHydrated: (state: boolean) => void
 }
 
 const toNumber = (value: string | number | undefined): number => {
@@ -127,7 +129,7 @@ export const useCartStore = create<CartState>()(
             //calculate
             getSubtotal: () => {
                 return get().items.reduce((total, item) => {
-                    const price = toNumber(item.variant?.price ?? item.product?.price??0);
+                    const price = toNumber(item.variant?.price ?? item.product?.price ?? 0);
                     return total + price * item.quantity;
                 }, 0);
             },
@@ -147,9 +149,15 @@ export const useCartStore = create<CartState>()(
                 const discount = get().getDiscountTotal();
                 return subtotal - discount;
             },
+
+            hasHydrated: false,
+            setHasHydrated: (state) => set({ hasHydrated: state }),
         }),
         {
             name: "cart-storage",
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true)
+            },
         }
     )
 );

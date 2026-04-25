@@ -88,7 +88,7 @@ export default function ProductsTable({ products, onEdit, onDelete, isloading = 
                                             />
                                         </div>
                                         <div className=" overflow-hidden">
-                                            <p className="font-semibold text-gray-900 text-xs font-body truncate line-clamp-2 ">
+                                            <p className="font-semibold text-gray-900 text-xs font-body truncate line-clamp-2 w-32">
                                                 {product.title}
                                             </p>
                                             {/* <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-2">

@@ -2,7 +2,8 @@ import axios from "axios";
 import { useAuthStore } from "../store/auth.store";
 
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://e-com-be-1-av8z.onrender.com/api/v1" || "http://localhost:5000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+//  "https://e-com-be-1-av8z.onrender.com/api/v1"||
 
 // export const apiFetch = async (
 //   endpoint: string,
@@ -60,7 +61,8 @@ api.interceptors.response.use(
     console.log("API ERROR:", err);
 
     const message =
-      err?.errors?.[0]?.msg || err?.message || "API Error";
+      err?.errors?.[0]?.msg || err?.message 
+      // || "API Error";
 
     return Promise.reject(new Error(message));
   }

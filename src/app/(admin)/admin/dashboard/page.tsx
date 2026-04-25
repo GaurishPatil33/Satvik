@@ -1,6 +1,6 @@
 
 
-import { orders, dashboardStats, revenueData, categoryRevenue, topProducts, recentActivity } from "@/src/lib/adminData";
+import { orders1, dashboardStats, revenueData, categoryRevenue, topProducts, recentActivity } from "@/src/lib/adminData";
 import { ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
 import { StatCard, SectionCard, MiniBarChart, DonutChart, OrderStatusBadge } from "../../components/Ui";
@@ -10,7 +10,7 @@ import LiveActivity from "../../components/dashboard/LiveActivity";
 import { TopProducts } from "../../components/dashboard/TopProducts";
 
 export default function DashboardPage() {
-  const recentOrders = orders.slice(0, 5);
+  const recentOrders = orders1.slice(0, 5);
 
   return (
     <div className="space-y-6 max-w-[1400px]">

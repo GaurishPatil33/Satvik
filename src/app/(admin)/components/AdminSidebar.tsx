@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard, Package, ShoppingCart, Users,
     BarChart2, Settings, ChevronRight, Tag, Star,
@@ -44,17 +44,14 @@ const navGroups = [
 
 export function AdminSidebar() {
     const pathname = usePathname();
-
+    const router = useRouter()
     const [collapsed, setCollapsed] = useState(false);
     const { logout } = useAuthStore()
-    const handleLogout = async () => {
-        try {
-            await logout()
-            alert("logout successful")
-        } catch (err) {
-            console.log("Error : ", err)
-        }
 
+
+    const handleLogout = () => {
+        logout()
+        router.replace("/")
     }
 
     // Load saved state
@@ -81,7 +78,10 @@ export function AdminSidebar() {
                     // <Leaf size={20} />
                     <div className=""></div>
                 ) : (
-                    <Image src="/logo.png" alt="logo" width={80} height={20} />
+                    <div className=" h-10 w-14 relative">
+
+                        <Image src="/logo.png" alt="logo" fill sizes="40px" className="w-full object-contain" />
+                    </div>
                 )}
                 {/* <div className=" h-20 w-80 ">
                     <Image src="/logo.png" alt="logo" width={80} height={20} className="h-full w-full" />

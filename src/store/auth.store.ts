@@ -1,20 +1,20 @@
+"use client";
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { IUser } from "@/src/types/user-types";
+
 import {
-  getCurrentUser,
   loginUser,
-  logout,
   registerUser,
+  getCurrentUser,
+  logoutUser,
 } from "@/src/services/auth.service";
-import { error } from "console";
 
 interface AuthState {
   user: IUser | null;
-  // token: string | null; getting no token err
   loading: boolean;
-  hasHydrated: boolean;
-  error: string | null
+  error: string | null;
 
   login: (email: string, password: string) => Promise<void>;
   register: (data: {
@@ -24,17 +24,16 @@ interface AuthState {
     phone: string;
     password: string;
   }) => Promise<void>;
+
   logout: () => Promise<void>;
-  fetchCurrentUser: () => Promise<void>;
+  fetchCurrentUser: () => Promise<IUser | null>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
-      // token: null,
       loading: false,
-      hasHydrated: false,
       error: null,
 
       /* LOGIN */
@@ -44,12 +43,15 @@ export const useAuthStore = create<AuthState>()(
         try {
           const res = await loginUser({ email, password });
 
-          set({
-            user: res.user,
-            // token: res.token,
-          });
+          set({ user: res.user });
         } catch (err: any) {
-          set({ error: err.message || "login failed!" })
+          const message =
+            err?.response?.data?.message ||
+            err?.message ||
+            "Login failed";
+
+          set({ error: message });
+          throw err;
         } finally {
           set({ loading: false });
         }
@@ -60,75 +62,60 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true, error: null });
 
         try {
-          //  create account
           await registerUser(data);
 
-          // auto login
           const res = await loginUser({
             email: data.email,
             password: data.password,
           });
 
-          set({
-            user: res.user,
-            // token: res.token,
-          });
+          set({ user: res.user });
         } catch (err: any) {
-          set({ error: err.message || "Register failed" });
+          const message =
+            err?.response?.data?.message ||
+            err?.message ||
+            "Register failed";
+
+          set({ error: message });
         } finally {
           set({ loading: false });
         }
       },
 
+      /* GET CURRENT USER */
+      fetchCurrentUser: async (): Promise<IUser | null> => {
+        const existingUser = get().user;
 
-
-      fetchCurrentUser: async () => {
-        // const token = useAuthStore.getState().token;
-
-        // if (!token) return; // no token → skip
+        // optional optimization: avoid extra API call
+        if (existingUser) return existingUser;
 
         set({ loading: true });
 
         try {
           const user = await getCurrentUser();
-
           set({ user });
+          return user;
         } catch {
-          // catch (err) {
-          // token might be invalid → logout
-          // useAuthStore.getState().logout();
-
-          set({ user: null })
-
-        }
-        finally {
+          set({ user: null });
+          return null;
+        } finally {
           set({ loading: false });
         }
       },
-
+      /* LOGOUT */
       logout: async () => {
-
-        // set({
-        //   user: null,
-        //   token: null,
-        //   error: null
-        // });
-        // useAuthStore.persist.clearStorage();
         try {
-          await logout()
+          await logoutUser();
         } finally {
-          set({ user: null })
+          set({ user: null, error: null });
         }
-
       },
-
-
     }),
     {
       name: "auth-storage",
-      onRehydrateStorage: () => () => {
-        useAuthStore.setState({ hasHydrated: true });
-      },
+      partialize: (state) => ({
+        user: state.user,
+      }),
     }
   )
 );

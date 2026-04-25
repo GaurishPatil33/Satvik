@@ -16,5 +16,16 @@ export function formatPrice(amount: number, currency: string = "INR") {
 }
 
 export const getProductById = (id: string) => {
-  return products.find(p => p.id.toString() === id);
+    return products.find(p => p.id.toString() === id);
 };
+
+export const fmt = (n: number) => `₹${n.toLocaleString("en-IN")}`;
+
+
+export function fmtCard(v: string) {
+    return v.replace(/\D/g, "").substring(0, 16).replace(/(.{4})/g, "$1  ").trim();
+}
+export function fmtExpiry(v: string) {
+    const d = v.replace(/\D/g, "");
+    return d.length >= 2 ? d.substring(0, 2) + " / " + d.substring(2, 4) : d;
+}
